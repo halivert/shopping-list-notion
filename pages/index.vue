@@ -1,15 +1,15 @@
 <script setup lang="ts">
-const { data: pages, pending } = useLazyFetch("/api/notion/root-pages")
-
-const selectedPage = useState("selectedPage", () => "")
+const { pages, pending } = usePages()
 </script>
 
 <template>
 	<main>
-		<strong>Selected page: {{ selectedPage }}</strong>
-
 		<ul v-if="!pending">
-			<li v-for="page in pages">{{ page }}</li>
+			<li v-for="page in pages">
+				<NuxtLink :to="{ name: 'pages-id', params: { id: page.id } }">
+					{{ page.title }}
+				</NuxtLink>
+			</li>
 		</ul>
 		<ul v-else>
 			<li>Loading...</li>

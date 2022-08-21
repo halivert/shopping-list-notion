@@ -1,8 +1,11 @@
 import { useNotion } from "@/composables/useNotion"
 import { PageObjectResponse } from "@notionhq/client/build/src/api-endpoints"
+import { Page } from "~~/types"
 
-export default defineEventHandler(async () => {
+export default defineEventHandler(async (): Promise<Page[]> => {
 	const notion = useNotion()
+
+	console.log("Calling notion API")
 
 	const pages = await notion.search({
 		filter: {
@@ -11,11 +14,9 @@ export default defineEventHandler(async () => {
 		},
 	})
 
-	const results = pages.results.filter((page) => {
-		if (page.object !== "page") return false
-
-		return (page as PageObjectResponse).parent.type === "workspace"
-	}) as PageObjectResponse[]
+	const results = pages.results.filter(
+		(page) => page.object === "page"
+	) as PageObjectResponse[]
 
 	const promises = results.map((page) =>
 		notion.pages.properties.retrieve({
@@ -24,5 +25,20 @@ export default defineEventHandler(async () => {
 		})
 	)
 
-	// TODO: Return info about page
+	const promiseResults = await Promise.allSettled(promises)
+
+	return results.map((page, idx): Page => {
+		const promiseResult = promiseResults[idx]
+
+		if (promiseResult.status !== "fulfilled") return page
+		if (promiseResult.value.object !== "list") return page
+
+		const title = promiseResult.value.results[0]
+		if (title.type !== "title") return page
+
+		return {
+			...results[idx],
+			title: title.title.plain_text,
+		}
+	})
 })
