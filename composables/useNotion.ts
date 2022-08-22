@@ -1,10 +1,9 @@
-import { Client, LogLevel } from "@notionhq/client"
+import { Client } from "@notionhq/client"
 
 export const useNotion = () => {
   const { notionToken } = useRuntimeConfig()
 
   return new Client({
     auth: notionToken,
-    logLevel: LogLevel.DEBUG
   })
 }
