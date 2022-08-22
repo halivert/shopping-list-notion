@@ -1,6 +1,6 @@
 <script setup lang="ts">
 defineProps<{
-	price: number,
+	price: number
 	item: {
 		text: string
 		checked: boolean
@@ -39,7 +39,7 @@ div.checked span {
 }
 
 div.checked input {
-	filter: brightness(95%);
+	background-color: var(--background-b);
 }
 
 div span {
@@ -50,10 +50,10 @@ div input {
 	flex: 0 0 24%;
 	min-width: 0;
 	padding: 0.25em;
+	margin: 0.125em;
 	font-size: 1.25rem;
-	outline: none;
-	border: 1px solid var(--text);
-	background-color: var(--background);
+	background-color: var(--background-c);
+	border: none;
 	color: var(--text);
 	border-radius: 4px;
 }

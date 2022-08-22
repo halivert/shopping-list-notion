@@ -13,7 +13,7 @@ const { pages, pending } = usePages()
 			</li>
 		</ul>
 		<ul v-else>
-			<li>Loading...</li>
+			<li>Cargando...</li>
 		</ul>
 	</main>
 </template>

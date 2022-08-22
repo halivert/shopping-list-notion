@@ -31,7 +31,16 @@ const calculateTotal = () => {
 	)
 }
 
-const { open } = useConfirmation()
+const reset = () => {
+	originalItems.value.forEach((item) => {
+		item.price = 0
+	})
+	calculateTotal()
+}
+
+const { open, confirmation, message, cancel, confirm } = useConfirmation({
+	confirm: reset,
+})
 
 const confirmReset = () => {
 	open("Deseas reiniciar la lista?")
@@ -40,9 +49,9 @@ const confirmReset = () => {
 
 <template>
 	<main>
-		<div v-if="pending">Loading...</div>
+		<div v-if="pending">Cargando...</div>
 		<div v-else>
-			<h1>{{ selectedPage.title }}</h1>
+			<h1>{{ selectedPage?.title }}</h1>
 
 			<header class="header">
 				<span>Total: {{ totalFormated }}</span>
@@ -74,6 +83,17 @@ const confirmReset = () => {
 				<button @click="confirmReset">Reiniciar</button>
 			</div>
 		</div>
+
+		<modal :open="confirmation">
+			<div class="confirmation-modal">
+				{{ message }}
+
+				<div class="buttons">
+					<button class="black" @click="cancel">Cancelar</button>
+					<button @click="confirm">Confirmar</button>
+				</div>
+			</div>
+		</modal>
 	</main>
 </template>
 
@@ -119,8 +139,29 @@ ul > :not(:last-of-type) {
 	flex: 1;
 	font-size: 1rem;
 	background-color: var(--background);
+	color: var(--text);
 	border: 1px solid var(--text);
 	border-radius: 4px;
 	padding: 0.25em 0.75em;
+}
+
+.confirmation-modal {
+	display: flex;
+	flex-flow: column nowrap;
+	gap: 1em;
+}
+
+.confirmation-modal .buttons {
+	justify-content: space-between;
+}
+
+.confirmation-modal .buttons button {
+	flex: 0;
+	font-size: 0.825em;
+}
+
+button.black {
+	background-color: var(--text);
+	color: var(--background);
 }
 </style>

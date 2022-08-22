@@ -7,15 +7,19 @@
 <style>
 :root {
   --text: #333;
-  --background: #fff;
+  --background: #d5d0cd;
+  --background-b: #d1cbc7;
+  --background-c: #c7c0bc;
   --accent: #00c0c0;
   --accent-hover: #00f5f5;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --text: #fff;
+    --text: #d5d0cd;
     --background: #333;
+    --background-b: #292929;
+    --background-c: #1f1f1f;
     --accent: #00c0c0;
     --accent-hover: #00a3a3;
   }
@@ -36,5 +40,9 @@ html {
 html,
 body {
   margin: 0;
+}
+
+* {
+  accent-color: var(--accent);
 }
 </style>
