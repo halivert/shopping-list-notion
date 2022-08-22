@@ -42,6 +42,11 @@ body {
   margin: 0;
 }
 
+body {
+  max-width: 80ch;
+  margin: 0 auto;
+}
+
 * {
   accent-color: var(--accent);
   box-sizing: border-box;
