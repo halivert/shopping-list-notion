@@ -44,5 +44,6 @@ body {
 
 * {
   accent-color: var(--accent);
+  box-sizing: border-box;
 }
 </style>

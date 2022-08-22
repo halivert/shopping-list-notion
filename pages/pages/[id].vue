@@ -1,20 +1,12 @@
 <script setup lang="ts">
+import { Prices } from "~~/types"
+
 const route = useRoute()
 const pageId = route.params.id as string
 
 const { page: selectedPage } = usePage(pageId)
 
 const { items: originalItems, pending } = useTodos(pageId)
-
-const total = ref(0)
-
-const totalFormated = computed(() =>
-	new Intl.NumberFormat("es-MX", {
-		style: "currency",
-		currency: "MXN",
-		currencyDisplay: "symbol",
-	}).format(total.value)
-)
 
 const hideChecked = ref(true)
 
@@ -24,12 +16,7 @@ const items = computed(() =>
 		: originalItems.value
 )
 
-const calculateTotal = () => {
-	total.value = items.value.reduce(
-		(total, { price }) => (Number.isNaN(price) ? total : total + price),
-		0
-	)
-}
+const { total, totalFormated, calculateTotal } = useTotal(items)
 
 const reset = () => {
 	originalItems.value.forEach((item) => {
@@ -42,9 +29,29 @@ const { open, confirmation, message, cancel, confirm } = useConfirmation({
 	confirm: reset,
 })
 
-const confirmReset = () => {
-	open("Deseas reiniciar la lista?")
-}
+const confirmReset = () => open("Deseas reiniciar la lista?")
+
+onMounted(() => {
+	const prices = JSON.parse(localStorage.getItem("prices") ?? "{}") as Prices
+
+	Object.entries(prices).forEach(([id, price]) => {
+		const item = originalItems.value.find((item) => item.id === id)
+		if (!item) return
+		item.price = price
+	})
+
+	calculateTotal()
+})
+
+watch(total, () => {
+	const prices: Prices = Object.fromEntries(
+		originalItems.value
+			.filter((item) => item.price > 0)
+			.map((item) => [item.id, item.price])
+	)
+
+	localStorage.setItem("prices", JSON.stringify(prices))
+})
 </script>
 
 <template>

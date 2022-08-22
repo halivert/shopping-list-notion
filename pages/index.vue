@@ -31,13 +31,12 @@ h1 {
 ul {
 	list-style: none;
 	padding: 0;
-	margin: 0;
+	margin-top: 5em;
 	display: flex;
 	flex-flow: column nowrap;
 	justify-content: space-around;
 	align-items: center;
-	min-height: 100%;
-	gap: 1em;
+	gap: 2em;
 }
 
 a {
