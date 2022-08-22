@@ -5,8 +5,6 @@ import { Page } from "~~/types"
 export default defineEventHandler(async (): Promise<Page[]> => {
 	const notion = useNotion()
 
-	console.log("Calling notion API")
-
 	const pages = await notion.search({
 		filter: {
 			property: "object",
