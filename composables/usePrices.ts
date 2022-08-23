@@ -1,4 +1,5 @@
 import { Ref } from "vue"
+import { watchOnce } from "@vueuse/core"
 import { Prices, TodoItem } from "~~/types"
 
 interface UsePriceProp {
@@ -12,6 +13,8 @@ export const usePrice = (props: UsePriceProp) => {
   const { items, key, onSave, onLoad } = props
 
   const save = () => {
+    if (!items.value) throw new Error("Error saving, please try again")
+
     const prices: Prices = Object.fromEntries(
       items.value
         .filter((item) => item.price > 0)
@@ -26,11 +29,13 @@ export const usePrice = (props: UsePriceProp) => {
   const load = () => {
     const prices = JSON.parse(localStorage.getItem(key) ?? "{}") as Prices
 
-    items.value.forEach((item) => {
-      if (prices[item.id]) item[key] = prices[item.id]
-    })
+    watchOnce(items, () => {
+      items.value.forEach((item) => {
+        if (prices[item.id]) item[key] = prices[item.id]
+      })
 
-    onLoad?.()
+      onLoad?.()
+    })
   }
 
   return { save, load }
