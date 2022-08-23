@@ -1,5 +1,8 @@
 <template>
   <div>
+    <Head>
+      <link rel="icon" type="image/x-icon" href="/favicon.webp" />
+    </Head>
     <NuxtPage />
   </div>
 </template>

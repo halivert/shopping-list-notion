@@ -16,10 +16,6 @@ const {
 } = useTodos(pageId)
 const { page, refresh: refreshPage } = usePage(pageId)
 
-useHead({
-	title: computed(() => page.value?.title ?? "Página..."),
-})
-
 const items = computed(() =>
 	hideChecked.value
 		? originalItems.value.filter((item) => !item.checked)
@@ -91,6 +87,9 @@ watch(total, () => prices.save())
 
 <template>
 	<main>
+		<Head>
+			<Title>{{ page?.title ?? "Página..." }}</Title>
+		</Head>
 		<div v-if="pending">Cargando...</div>
 		<div v-else>
 			<h1>{{ page?.title }}</h1>

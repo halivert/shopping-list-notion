@@ -1,13 +1,12 @@
 <script setup lang="ts">
 const { pages, pending } = usePages()
-
-useHead({
-	title: "Lista de compras"
-})
 </script>
 
 <template>
 	<main>
+		<Head>
+			<Title>Lista de compras</Title>
+		</Head>
 		<h1>Selecciona una página</h1>
 		<ul v-if="!pending" role="list">
 			<li v-for="page in pages">
