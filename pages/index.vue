@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { urlBuilder } from "~~/helpers/url"
 
+definePageMeta({ middleware: "guest" })
+
 const { baseUrl, notionClient, notionUrl } = useRuntimeConfig()
 
 const { href } = useLink({ to: { name: "login-callback" } })

@@ -1,5 +1,10 @@
 import { NotionOAuthResponse } from "~~/types"
 
 export const useLoginData = () => {
-  return useCookie<NotionOAuthResponse>("loginData", { httpOnly: true })
+  const config = useRuntimeConfig()
+
+  return useCookie<NotionOAuthResponse>("loginData", {
+    httpOnly: true,
+    secure: config.public.production,
+  })
 }

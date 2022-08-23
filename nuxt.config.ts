@@ -9,6 +9,7 @@ export default defineNuxtConfig({
       notionClient: process.env.NUXT_NOTION_CLIENT,
       baseUrl: process.env.NUXT_BASE_URL,
       notionUrl: "https://api.notion.com/v1",
+      production: process.env.NODE_ENV === "production",
     },
   },
 })
