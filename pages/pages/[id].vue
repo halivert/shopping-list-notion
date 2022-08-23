@@ -71,7 +71,6 @@ const prices = usePrice({
 const lastPrices = usePrice({
 	items: originalItems,
 	key: LAST_PRICE_KEY,
-	onLoad: () => calculateTotal(),
 })
 
 onBeforeMount(() => {

@@ -21,7 +21,7 @@
     --background-b: #292929;
     --background-c: #1f1f1f;
     --accent: #00c0c0;
-    --accent-hover: #00a3a3;
+    --accent-hover: #008f8f;
   }
 }
 
@@ -50,5 +50,9 @@ body {
 * {
   accent-color: var(--accent);
   box-sizing: border-box;
+}
+
+::selection {
+  background-color: var(--accent-hover);
 }
 </style>

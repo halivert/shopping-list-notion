@@ -1,5 +1,4 @@
 import { Ref } from "vue"
-import { watchOnce } from "@vueuse/core"
 import { Prices, TodoItem } from "~~/types"
 
 interface UsePriceProp {
@@ -29,13 +28,16 @@ export const usePrice = (props: UsePriceProp) => {
   const load = () => {
     const prices = JSON.parse(localStorage.getItem(key) ?? "{}") as Prices
 
-    watchOnce(items, () => {
+    const internalLoad = () => {
       items.value.forEach((item) => {
         if (prices[item.id]) item[key] = prices[item.id]
       })
 
-      onLoad?.()
-    })
+      return onLoad?.()
+    }
+
+    if (items.value) internalLoad()
+    watch(items, internalLoad)
   }
 
   return { save, load }

@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { getCurrency } from "~~/helpers/currency"
+
 const props = defineProps<{
 	price: number
 	checked: boolean
@@ -13,6 +15,10 @@ const emitChange = (event: InputEvent) => {
 	const target = event.target as HTMLInputElement
 	emit("update:price", target.valueAsNumber)
 }
+
+const stringPrice = computed(() =>
+	props.lastPrice ? getCurrency(props.lastPrice) : ""
+)
 </script>
 
 <template>
@@ -22,7 +28,7 @@ const emitChange = (event: InputEvent) => {
 			type="number"
 			@input="emitChange"
 			:value="price || null"
-			:placeholder="lastPrice?.toString()"
+			:placeholder="stringPrice"
 		/>
 	</div>
 </template>
