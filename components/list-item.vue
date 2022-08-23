@@ -1,10 +1,8 @@
 <script setup lang="ts">
-defineProps<{
+const props = defineProps<{
 	price: number
-	item: {
-		text: string
-		checked: boolean
-	}
+	checked: boolean
+	lastPrice?: number
 }>()
 
 const emit = defineEmits<{
@@ -18,9 +16,14 @@ const emitChange = (event: InputEvent) => {
 </script>
 
 <template>
-	<div :class="{ checked: item.checked }">
+	<div :class="{ checked: checked }">
 		<span><slot /></span>
-		<input type="number" @input="emitChange" :value="price || null" />
+		<input
+			type="number"
+			@input="emitChange"
+			:value="price || null"
+			:placeholder="lastPrice?.toString()"
+		/>
 	</div>
 </template>
 

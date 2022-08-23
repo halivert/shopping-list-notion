@@ -1,5 +1,5 @@
 export const usePage = (id: string) => {
-  const { data, pending } = useLazyFetch(`/api/notion/pages/${id}`)
+  const { data: page, pending } = useLazyFetch(`/api/notion/pages/${id}`)
 
-  return { page: data, pending }
+  return { page, pending }
 }

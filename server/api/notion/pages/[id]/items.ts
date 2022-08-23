@@ -1,14 +1,11 @@
 import { useNotion } from "@/composables/useNotion"
-import { ListBlockChildrenResponse } from "@notionhq/client/build/src/api-endpoints"
 
-export default defineEventHandler(
-	(event): Promise<ListBlockChildrenResponse> => {
-		const { id } = event.context.params
+export default defineEventHandler((event) => {
+	const { id } = event.context.params
 
-		const notion = useNotion()
+	const notion = useNotion()
 
-		return notion.blocks.children.list({
-			block_id: id,
-		})
-	}
-)
+	return notion.blocks.children.list({
+		block_id: id,
+	})
+})

@@ -1,7 +1,7 @@
-import { Ref } from "vue"
+import { ComputedRef } from "vue"
 import { TodoItem } from "~~/types"
 
-export const useTotal = (items: Ref<TodoItem[]>) => {
+export const useTotal = (items: ComputedRef<TodoItem[]>) => {
   const total = ref(0)
 
   const totalFormated = computed(() =>

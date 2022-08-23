@@ -1,14 +1,16 @@
 <script setup lang="ts">
 import { Prices } from "~~/types"
 
+const PRICE_KEY = "price"
+const LAST_PRICE_KEY = "lastPrice"
+
 const route = useRoute()
-const pageId = route.params.id as string
-
-const { page: selectedPage } = usePage(pageId)
-
-const { items: originalItems, pending } = useTodos(pageId)
-
 const hideChecked = ref(true)
+
+const pageId = computed(() => route.params.id as string)
+
+const { items: originalItems, pending } = useTodos(pageId.value)
+const { page: selectedPage } = usePage(pageId.value)
 
 const items = computed(() =>
 	hideChecked.value
@@ -19,9 +21,30 @@ const items = computed(() =>
 const { total, totalFormated, calculateTotal } = useTotal(items)
 
 const reset = () => {
+	const allZeros = originalItems.value.every((item) => !item.price)
+
+	if (allZeros) {
+		localStorage.removeItem(LAST_PRICE_KEY)
+
+		originalItems.value.forEach((item) => (item.lastPrice = undefined))
+	} else {
+		const lastPrices: Prices = JSON.parse(
+			localStorage.getItem(LAST_PRICE_KEY) ?? "{}"
+		)
+
+		originalItems.value.forEach((item) => {
+			if (!item.price) return
+			lastPrices[item.id] = item.price
+			item.lastPrice = item.price
+		})
+
+		localStorage.setItem(LAST_PRICE_KEY, JSON.stringify(lastPrices))
+	}
+
 	originalItems.value.forEach((item) => {
 		item.price = 0
 	})
+
 	calculateTotal()
 }
 
@@ -31,27 +54,24 @@ const { open, confirmation, message, cancel, confirm } = useConfirmation({
 
 const confirmReset = () => open("Deseas reiniciar la lista?")
 
+const prices = usePrice({
+	items: originalItems,
+	key: PRICE_KEY,
+	onLoad: () => calculateTotal(),
+})
+
+const lastPrices = usePrice({
+	items: originalItems,
+	key: LAST_PRICE_KEY,
+	onLoad: () => calculateTotal(),
+})
+
 onMounted(() => {
-	const prices = JSON.parse(localStorage.getItem("prices") ?? "{}") as Prices
-
-	Object.entries(prices).forEach(([id, price]) => {
-		const item = originalItems.value.find((item) => item.id === id)
-		if (!item) return
-		item.price = price
-	})
-
-	calculateTotal()
+	prices.load()
+	lastPrices.load()
 })
 
-watch(total, () => {
-	const prices: Prices = Object.fromEntries(
-		originalItems.value
-			.filter((item) => item.price > 0)
-			.map((item) => [item.id, item.price])
-	)
-
-	localStorage.setItem("prices", JSON.stringify(prices))
-})
+watch(total, () => prices.save())
 </script>
 
 <template>
@@ -77,7 +97,7 @@ watch(total, () => {
 			<ul role="list">
 				<li v-for="item in items" :key="item.id">
 					<list-item
-						:item="item"
+						v-bind="item"
 						v-model:price="item.price"
 						@update:price="calculateTotal"
 					>
