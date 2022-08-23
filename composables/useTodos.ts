@@ -19,10 +19,14 @@ const transform = (data: ListBlockChildrenResponse): TodoItem[] =>
     ) ?? []
 
 export const useTodos = (id: Ref<string>) => {
-  const { data: items, pending, refresh } = useLazyFetch(
-    `/api/notion/pages/${id.value}/items`,
-    { transform }
-  )
+  const {
+    data: items,
+    pending,
+    refresh,
+  } = useLazyFetch(`/api/notion/pages/${id.value}/items`, {
+    transform,
+    headers: useRequestHeaders(["cookie"]),
+  })
 
   return { items, pending, refresh }
 }

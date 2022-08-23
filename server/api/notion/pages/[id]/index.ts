@@ -1,11 +1,15 @@
 import { useNotion } from "@/composables/useNotion"
 import { PageObjectResponse } from "@notionhq/client/build/src/api-endpoints"
-import { Page } from "~~/types"
+import { NotionOAuthResponse, Page } from "~~/types"
 
 export default defineEventHandler(async (event): Promise<Page> => {
 	const { id } = event.context.params
 
-	const notion = useNotion()
+	const loginData: NotionOAuthResponse = JSON.parse(
+		getCookie(event, "loginData")
+	)
+
+	const notion = useNotion(loginData.access_token)
 
 	const page = (await notion.pages.retrieve({
 		page_id: id,

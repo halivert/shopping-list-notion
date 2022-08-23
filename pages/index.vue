@@ -1,5 +1,17 @@
 <script setup lang="ts">
-const { pages, pending } = usePages()
+import { urlBuilder } from "~~/helpers/url"
+
+const { baseUrl, notionClient, notionUrl } = useRuntimeConfig()
+
+const { href } = useLink({ to: { name: "login-callback" } })
+const callbackUrl = new URL(href.value, baseUrl).href
+
+const url = urlBuilder(`${notionUrl}/oauth/authorize`, {
+	client_id: notionClient,
+	redirect_uri: callbackUrl,
+	response_type: "code",
+	owner: "user",
+})
 </script>
 
 <template>
@@ -7,48 +19,36 @@ const { pages, pending } = usePages()
 		<Head>
 			<Title>Lista de compras</Title>
 		</Head>
-		<h1>Selecciona una página</h1>
-		<ul v-if="!pending" role="list">
-			<li v-for="page in pages">
-				<NuxtLink :to="{ name: 'pages-id', params: { id: page.id } }">
-					{{ page.title }}
-				</NuxtLink>
-			</li>
-		</ul>
-		<ul v-else>
-			<li>Cargando...</li>
-		</ul>
+
+		<div>
+			<h1>Lista de compras</h1>
+
+			<p>
+				Hola, aquí podrás utilizar tu lista de compras como una calculadora y
+				también almacenar los precios anteriores con un solo toque*
+			</p>
+
+			<p>Aquí debe ir un vídeo que demuestre como se hace esto</p>
+
+			<p>
+				<a :href="url.href">Agregar a Notion</a>
+			</p>
+
+			<details>
+				<summary>Nota: *</summary>
+				<small
+					>En realidad son dos toques, mira uno es para abrir un cuadro de
+					diálogo y el otro es para confirmar, pero estás de acuerdo que si no
+					confirmamos podríamos tener algunos errores, ¿verdad? entonces pues
+					digamos que es un solo toque, el de confirmación.</small
+				>
+			</details>
+		</div>
 	</main>
 </template>
 
 <style scoped>
 main {
-	height: 100vh;
-	padding: 0.5em;
-}
-
-h1 {
-	text-align: center;
-}
-
-ul {
-	list-style: none;
-	padding: 0;
-	margin-top: 5em;
-	display: flex;
-	flex-flow: column nowrap;
-	justify-content: space-around;
-	align-items: center;
-	gap: 2em;
-}
-
-a {
-	text-decoration: none;
-	font-size: 2rem;
-	color: var(--accent);
-}
-
-a:hover {
-	color: var(--accent-hover);
+	padding: 0 1em;
 }
 </style>

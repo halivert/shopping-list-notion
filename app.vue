@@ -58,4 +58,17 @@ body {
 ::selection {
   background-color: var(--accent-hover);
 }
+
+a {
+  text-decoration: none;
+  color: var(--accent);
+}
+
+a:hover {
+  color: var(--accent-hover);
+}
+
+main {
+  padding: 1em;
+}
 </style>

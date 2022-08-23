@@ -5,7 +5,9 @@ export const usePage = (id: Ref<string>) => {
     data: page,
     pending,
     refresh,
-  } = useLazyFetch(`/api/notion/pages/${id.value}`)
+  } = useLazyFetch(`/api/notion/pages/${id.value}`, {
+    headers: useRequestHeaders(["cookie"]),
+  })
 
   return { page, pending, refresh }
 }

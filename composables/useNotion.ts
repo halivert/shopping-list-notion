@@ -1,9 +1,9 @@
 import { Client } from "@notionhq/client"
 
-export const useNotion = () => {
+export const useNotion = (accessToken?: string) => {
   const { notionToken } = useRuntimeConfig()
 
   return new Client({
-    auth: notionToken,
+    auth: accessToken ?? notionToken,
   })
 }
