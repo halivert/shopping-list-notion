@@ -1,5 +1,9 @@
 <script setup lang="ts">
 const { pages, pending } = usePages()
+
+useHead({
+	title: "Lista de compras"
+})
 </script>
 
 <template>

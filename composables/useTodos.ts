@@ -3,6 +3,7 @@ import {
   ListBlockChildrenResponse,
   ToDoBlockObjectResponse,
 } from "@notionhq/client/build/src/api-endpoints"
+import { Ref } from "vue"
 import { TodoItem } from "~~/types"
 
 const transform = (data: ListBlockChildrenResponse): TodoItem[] =>
@@ -17,11 +18,11 @@ const transform = (data: ListBlockChildrenResponse): TodoItem[] =>
       })
     ) ?? []
 
-export const useTodos = (id: string) => {
-  const { data: items, pending } = useLazyFetch(
-    `/api/notion/pages/${id}/items`,
+export const useTodos = (id: Ref<string>) => {
+  const { data: items, pending, refresh } = useLazyFetch(
+    `/api/notion/pages/${id.value}/items`,
     { transform }
   )
 
-  return { items, pending }
+  return { items, pending, refresh }
 }

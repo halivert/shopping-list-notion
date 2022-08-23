@@ -1,5 +1,11 @@
-export const usePage = (id: string) => {
-  const { data: page, pending } = useLazyFetch(`/api/notion/pages/${id}`)
+import { Ref } from "vue"
 
-  return { page, pending }
+export const usePage = (id: Ref<string>) => {
+  const {
+    data: page,
+    pending,
+    refresh,
+  } = useLazyFetch(`/api/notion/pages/${id.value}`)
+
+  return { page, pending, refresh }
 }

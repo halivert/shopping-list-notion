@@ -9,8 +9,16 @@ const hideChecked = ref(true)
 
 const pageId = computed(() => route.params.id as string)
 
-const { items: originalItems, pending } = useTodos(pageId.value)
-const { page: selectedPage } = usePage(pageId.value)
+const {
+	items: originalItems,
+	pending,
+	refresh: refreshItems,
+} = useTodos(pageId)
+const { page: selectedPage, refresh: refreshPage } = usePage(pageId)
+
+useHead({
+	title: computed(() => selectedPage.value?.title ?? "Página..."),
+})
 
 const items = computed(() =>
 	hideChecked.value
@@ -64,6 +72,13 @@ const lastPrices = usePrice({
 	items: originalItems,
 	key: LAST_PRICE_KEY,
 	onLoad: () => calculateTotal(),
+})
+
+onBeforeMount(() => {
+	if (selectedPage.value?.id !== pageId.value) {
+		refreshPage()
+		refreshItems()
+	}
 })
 
 onMounted(() => {
