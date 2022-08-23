@@ -14,10 +14,10 @@ const {
 	pending,
 	refresh: refreshItems,
 } = useTodos(pageId)
-const { page: selectedPage, refresh: refreshPage } = usePage(pageId)
+const { page, refresh: refreshPage } = usePage(pageId)
 
 useHead({
-	title: computed(() => selectedPage.value?.title ?? "Página..."),
+	title: computed(() => page.value?.title ?? "Página..."),
 })
 
 const items = computed(() =>
@@ -31,23 +31,24 @@ const { total, totalFormated, calculateTotal } = useTotal(items)
 const reset = () => {
 	const allZeros = originalItems.value.every((item) => !item.price)
 
+	const lastPrices: Prices = JSON.parse(
+		localStorage.getItem(LAST_PRICE_KEY) ?? "{}"
+	)
+
 	if (allZeros) {
-		localStorage.removeItem(LAST_PRICE_KEY)
-
-		originalItems.value.forEach((item) => (item.lastPrice = undefined))
+		originalItems.value.forEach((item) => {
+			item.lastPrice = undefined
+			lastPrices[item.id] = undefined
+		})
 	} else {
-		const lastPrices: Prices = JSON.parse(
-			localStorage.getItem(LAST_PRICE_KEY) ?? "{}"
-		)
-
 		originalItems.value.forEach((item) => {
 			if (!item.price) return
 			lastPrices[item.id] = item.price
 			item.lastPrice = item.price
 		})
-
-		localStorage.setItem(LAST_PRICE_KEY, JSON.stringify(lastPrices))
 	}
+
+	localStorage.setItem(LAST_PRICE_KEY, JSON.stringify(lastPrices))
 
 	originalItems.value.forEach((item) => {
 		item.price = 0
@@ -74,7 +75,7 @@ const lastPrices = usePrice({
 })
 
 onBeforeMount(() => {
-	if (selectedPage.value?.id !== pageId.value) {
+	if (page.value?.id !== pageId.value) {
 		refreshPage()
 		refreshItems()
 	}
@@ -92,7 +93,7 @@ watch(total, () => prices.save())
 	<main>
 		<div v-if="pending">Cargando...</div>
 		<div v-else>
-			<h1>{{ selectedPage?.title }}</h1>
+			<h1>{{ page?.title }}</h1>
 
 			<header class="header">
 				<span>Total: {{ totalFormated }}</span>

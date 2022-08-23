@@ -14,13 +14,13 @@ export const usePrice = (props: UsePriceProp) => {
   const save = () => {
     if (!items.value) throw new Error("Error saving, please try again")
 
+    const savedPrices = JSON.parse(localStorage.getItem(key) ?? "{}") as Prices
+
     const prices: Prices = Object.fromEntries(
-      items.value
-        .filter((item) => item.price > 0)
-        .map((item) => [item.id, item[key]])
+      items.value.map((item) => [item.id, item[key] || undefined])
     )
 
-    localStorage.setItem(key, JSON.stringify(prices))
+    localStorage.setItem(key, JSON.stringify({ ...savedPrices, ...prices }))
 
     onSave?.()
   }
