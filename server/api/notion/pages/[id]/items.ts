@@ -5,7 +5,7 @@ export default defineEventHandler((event) => {
 	const { id } = event.context.params
 
 	const loginData: NotionOAuthResponse = JSON.parse(
-		getCookie(event, "loginData")
+		getCookie(event, "loginData") ?? "{}"
 	)
 
 	const notion = useNotion(loginData.access_token)

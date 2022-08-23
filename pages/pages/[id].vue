@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { Prices } from "~~/types"
 
+definePageMeta({ middleware: "auth" })
+
 const PRICE_KEY = "price"
 const LAST_PRICE_KEY = "lastPrice"
 

@@ -1,6 +1,6 @@
-export default defineNuxtRouteMiddleware((to, from) => {
+export default defineNuxtRouteMiddleware(() => {
+	const loginData = useLoginData()
 	if (process.server) {
-		const loginData = useLoginData()
-		if (!loginData) return navigateTo("/")
+		if (!loginData?.value) return navigateTo("/")
 	}
 })

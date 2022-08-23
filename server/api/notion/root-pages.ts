@@ -4,7 +4,7 @@ import { NotionOAuthResponse, Page } from "~~/types"
 
 export default defineEventHandler(async (event): Promise<Page[]> => {
 	const loginData: NotionOAuthResponse = JSON.parse(
-		getCookie(event, "loginData")
+		getCookie(event, "loginData") ?? "{}"
 	)
 
 	const notion = useNotion(loginData.access_token)
