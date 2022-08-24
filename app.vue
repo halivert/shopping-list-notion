@@ -13,8 +13,8 @@
   --background: #d5d0cd;
   --background-b: #d1cbc7;
   --background-c: #c7c0bc;
-  --accent: #00c0c0;
-  --accent-hover: #00f5f5;
+  --accent: #008f8f;
+  --accent-hover: #00a3a3;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -38,6 +38,7 @@ html {
   background-color: var(--background);
   font-size: 18px;
   font-family: "Bitter", sans-serif, serif;
+  scroll-behavior: smooth;
 }
 
 html,
@@ -70,5 +71,9 @@ a:hover {
 
 main {
   padding: 1em;
+}
+
+img {
+  max-width: 100%;
 }
 </style>
