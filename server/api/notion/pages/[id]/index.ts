@@ -9,6 +9,16 @@ export default defineEventHandler(async (event): Promise<Page> => {
 		getCookie(event, "loginData") ?? "{}"
 	)
 
+	if (!loginData.access_token) {
+		return sendError(event, {
+			fatal: false,
+			message: "No access token provided",
+			name: "Bad request",
+			statusCode: 400,
+			statusMessage: "Bad request",
+		})
+	}
+
 	const notion = useNotion(loginData.access_token)
 
 	const page = (await notion.pages.retrieve({

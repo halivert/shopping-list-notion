@@ -2,10 +2,20 @@ import { useNotion } from "@/composables/useNotion"
 import { PageObjectResponse } from "@notionhq/client/build/src/api-endpoints"
 import { NotionOAuthResponse, Page } from "~~/types"
 
-export default defineEventHandler(async (event): Promise<Page[]> => {
+export default defineEventHandler(async (event): Promise<Page[] | void> => {
 	const loginData: NotionOAuthResponse = JSON.parse(
 		getCookie(event, "loginData") ?? "{}"
 	)
+
+	if (!loginData.access_token) {
+		return sendError(event, {
+			fatal: false,
+			message: "No access token provided",
+			name: "Bad request",
+			statusCode: 400,
+			statusMessage: "Bad request",
+		})
+	}
 
 	const notion = useNotion(loginData.access_token)
 
