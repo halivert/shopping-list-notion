@@ -104,6 +104,15 @@ const url = urlBuilder(`${notionUrl}/oauth/authorize`, {
 				</div>
 			</section>
 
+			<p>
+				<small>
+					Puedes leer la
+					<NuxtLink :to="{ name: 'policy' }">política de privacidad</NuxtLink> y
+					también los
+					<NuxtLink :to="{ name: 'terms' }">términos del servicio</NuxtLink>.
+				</small>
+			</p>
+
 			<details>
 				<summary>Nota: *</summary>
 				<small
@@ -145,7 +154,8 @@ main {
 	display: flex;
 	flex-flow: column nowrap;
 	gap: 0.5em;
-	margin-top: -1rem;
+	margin-top: -1em;
+	margin-bottom: 1em;
 }
 
 .hero h1 {

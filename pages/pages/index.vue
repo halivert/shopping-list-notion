@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import { randomUUID } from "crypto"
-
 const { pages, pending } = usePages()
 
 definePageMeta({
@@ -21,6 +19,9 @@ definePageMeta({
 					<NuxtLink :to="{ name: 'pages-id', params: { id: page.id } }">
 						{{ page.title }}
 					</NuxtLink>
+				</li>
+				<li v-if="!pages.length">
+					¡Ups! no compartiste ninguna página
 				</li>
 			</ul>
 			<ul v-else>

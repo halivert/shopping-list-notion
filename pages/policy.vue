@@ -1,5 +1,3 @@
-<script setup lang="ts"></script>
-
 <template>
 	<main>
 		<Head>
@@ -34,9 +32,3 @@
 		</p>
 	</main>
 </template>
-
-<style scoped>
-main {
-	padding: 0 1em;
-}
-</style>
