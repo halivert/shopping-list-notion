@@ -2,7 +2,7 @@ import { useNotion } from "@/composables/useNotion"
 import { PageObjectResponse } from "@notionhq/client/build/src/api-endpoints"
 import { NotionOAuthResponse, Page } from "~~/types"
 
-export default defineEventHandler(async (event): Promise<Page> => {
+export default defineEventHandler(async (event): Promise<Page|void> => {
 	const { id } = event.context.params
 
 	const loginData: NotionOAuthResponse = JSON.parse(

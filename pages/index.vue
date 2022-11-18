@@ -20,6 +20,8 @@ const url = urlBuilder(`${notionUrl}/oauth/authorize`, {
 	<main>
 		<Head>
 			<Title>Lista de compras</Title>
+
+			<Script async src="https://cdn.splitbee.io/sb.js"></Script>
 		</Head>
 
 		<div>
