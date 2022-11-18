@@ -1,0 +1,17 @@
+[program:${name}]
+environment=NUXT_BASE_URL="",NUXT_NOTION_CLIENT="",NUXT_NOTION_SECRET=""
+directory=${path}
+command=node ./.output/server/index.mjs
+
+process_name=%(program_name)s_%(process_num)02d
+autostart=true
+autorestart=true
+user=shopping-list
+numprocs=1
+startsecs=1
+redirect_stderr=true
+stdout_logfile=${other-path}
+stopwaitsecs=10
+stopsignal=SIGTERM
+stopasgroup=true
+killasgroup=true
