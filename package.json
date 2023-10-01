@@ -7,10 +7,10 @@
     "preview": "nuxt preview"
   },
   "devDependencies": {
-    "nuxt": "3.0.0-rc.8"
+    "nuxt": "3.7.4"
   },
   "dependencies": {
-    "@notionhq/client": "^2.1.1"
+    "@notionhq/client": "2.2.13"
   },
   "prettier": {
     "semi": false
