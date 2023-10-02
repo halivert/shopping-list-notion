@@ -1,18 +1,13 @@
+import { type OauthTokenResponse } from "@notionhq/client/build/src/api-endpoints"
 import { CookieRef } from "nuxt/dist/app/composables"
-import { NotionOAuthResponse } from "~~/types"
 
-export const useLoginData = (): CookieRef<NotionOAuthResponse> | undefined => {
+export const useLoginData = (): CookieRef<OauthTokenResponse> => {
   const config = useRuntimeConfig()
 
-  const cookie = useCookie("loginData", {
+  const cookie = useCookie<OauthTokenResponse>("loginData", {
     httpOnly: true,
     secure: config.public.production,
   })
 
-  if (!cookie) return undefined
-
-  return useCookie<NotionOAuthResponse>("loginData", {
-    httpOnly: true,
-    secure: config.public.production,
-  })
+  return cookie
 }

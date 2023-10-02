@@ -1,9 +1,11 @@
 import { Client } from "@notionhq/client"
 
-export const useNotion = (accessToken?: string) => {
-  const { notionToken } = useRuntimeConfig()
+export const useNotion = (accessToken?: string): Client => {
+  const auth = accessToken ?? useLoginData().value.access_token
 
-  return new Client({
-    auth: accessToken ?? notionToken,
-  })
+  if (!auth) {
+    console.warn("No token setted")
+  }
+
+  return new Client({ auth })
 }
