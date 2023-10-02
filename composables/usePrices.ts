@@ -1,9 +1,12 @@
 import { Ref } from "vue"
 import { Prices, TodoItem } from "~~/types"
 
+export const PRICE_KEY = "price"
+export const LAST_PRICE_KEY = "lastPrice"
+
 interface UsePriceProp {
-  items: Ref<TodoItem[]>
-  key: string
+  items: Ref<TodoItem[] | null>
+  key: typeof PRICE_KEY | typeof LAST_PRICE_KEY
   onSave?: () => void
   onLoad?: () => void
 }
@@ -11,25 +14,27 @@ interface UsePriceProp {
 export const usePrice = (props: UsePriceProp) => {
   const { items, key, onSave, onLoad } = props
 
-  const save = () => {
+  function save(): void {
     if (!items.value) throw new Error("Error saving, please try again")
 
     const savedPrices = JSON.parse(localStorage.getItem(key) ?? "{}") as Prices
 
     const prices: Prices = Object.fromEntries(
-      items.value.map((item) => [item.id, item[key] || undefined])
+      items.value.map((item) => [item.id, item[key] || 0]),
     )
 
     localStorage.setItem(key, JSON.stringify({ ...savedPrices, ...prices }))
 
-    onSave?.()
+    return onSave?.()
   }
 
-  const load = () => {
+  function load(): void {
+    if (!items.value) return
+
     const prices = JSON.parse(localStorage.getItem(key) ?? "{}") as Prices
 
     const internalLoad = () => {
-      items.value.forEach((item) => {
+      items.value?.forEach((item) => {
         if (prices[item.id]) item[key] = prices[item.id]
       })
 

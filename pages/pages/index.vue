@@ -20,7 +20,7 @@ definePageMeta({
 						{{ page.title }}
 					</NuxtLink>
 				</li>
-				<li v-if="!pages.length">
+				<li v-if="!pages?.length">
 					¡Ups! no compartiste ninguna página
 				</li>
 			</ul>

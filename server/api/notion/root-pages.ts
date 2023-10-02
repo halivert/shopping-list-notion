@@ -1,56 +1,41 @@
-import { useNotion } from "@/composables/useNotion"
-import { PageObjectResponse } from "@notionhq/client/build/src/api-endpoints"
-import { NotionOAuthResponse, Page } from "~~/types"
+import { type PageObjectResponse } from "@notionhq/client/build/src/api-endpoints"
+import { Page } from "~~/types"
 
 export default defineEventHandler(async (event): Promise<Page[] | void> => {
-	const loginData: NotionOAuthResponse = JSON.parse(
-		getCookie(event, "loginData") ?? "{}"
-	)
+  const notion = useNotion(getCookie(event, "loginData"))
 
-	if (!loginData.access_token) {
-		return sendError(event, {
-			fatal: false,
-			message: "No access token provided",
-			name: "Bad request",
-			statusCode: 400,
-			statusMessage: "Bad request",
-		})
-	}
+  const pages = await notion.search({
+    filter: {
+      property: "object",
+      value: "page",
+    },
+  })
 
-	const notion = useNotion(loginData.access_token)
+  const results = pages.results.filter(
+    (page) => page.object === "page",
+  ) as PageObjectResponse[]
 
-	const pages = await notion.search({
-		filter: {
-			property: "object",
-			value: "page",
-		},
-	})
+  const promises = results.map((page) =>
+    notion.pages.properties.retrieve({
+      page_id: page.id,
+      property_id: "title",
+    }),
+  )
 
-	const results = pages.results.filter(
-		(page) => page.object === "page"
-	) as PageObjectResponse[]
+  const promiseResults = await Promise.allSettled(promises)
 
-	const promises = results.map((page) =>
-		notion.pages.properties.retrieve({
-			page_id: page.id,
-			property_id: "title",
-		})
-	)
+  return results.map((page, idx): Page => {
+    const promiseResult = promiseResults[idx]
 
-	const promiseResults = await Promise.allSettled(promises)
+    if (promiseResult.status !== "fulfilled") return page
+    if (promiseResult.value.object !== "list") return page
 
-	return results.map((page, idx): Page => {
-		const promiseResult = promiseResults[idx]
+    const title = promiseResult.value.results[0]
+    if (title.type !== "title") return page
 
-		if (promiseResult.status !== "fulfilled") return page
-		if (promiseResult.value.object !== "list") return page
-
-		const title = promiseResult.value.results[0]
-		if (title.type !== "title") return page
-
-		return {
-			...results[idx],
-			title: title.title.plain_text,
-		}
-	})
+    return {
+      ...results[idx],
+      title: title.title.plain_text,
+    }
+  })
 })

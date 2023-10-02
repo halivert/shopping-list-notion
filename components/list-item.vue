@@ -2,68 +2,60 @@
 import { getCurrency } from "~~/helpers/currency"
 
 const props = defineProps<{
-	price: number
-	checked: boolean
-	lastPrice?: number
+  price: number
+  checked: boolean
+  lastPrice?: number
 }>()
 
 const emit = defineEmits<{
-	(e: "update:price", price: number): void
+  "update:price": [price: number]
 }>()
 
-const emitChange = (event: InputEvent) => {
-	const target = event.target as HTMLInputElement
-	emit("update:price", target.valueAsNumber)
+const emitChange = (event: Event) => {
+  const target = event.target as HTMLInputElement
+  emit("update:price", target.valueAsNumber)
 }
 
 const stringPrice = computed(() =>
-	props.lastPrice ? getCurrency(props.lastPrice) : ""
+  props.lastPrice ? getCurrency(props.lastPrice) : "",
 )
 </script>
 
 <template>
-	<div :class="{ checked: checked }">
-		<span><slot /></span>
-		<input
-			type="number"
-			@input="emitChange"
-			:value="price || null"
-			:placeholder="stringPrice"
-		/>
-	</div>
+  <div
+    :class="[
+      { checked: checked },
+      'flex gap-4 max-w-full justify-between items-center flex-row flex-nowrap',
+    ]"
+  >
+    <span class="flex-[3_1_auto]"><slot /></span>
+    <input
+      class="price-input flex-[0_0_24%]"
+      type="number"
+      :placeholder="stringPrice"
+      :value="props.price || null"
+      @input="emitChange"
+    />
+  </div>
 </template>
 
 <style scoped>
-div {
-	display: flex;
-	flex-flow: row nowrap;
-	gap: 1em;
-	max-width: 100%;
-	justify-content: space-between;
-	align-items: center;
-}
-
 div.checked span {
-	text-decoration: line-through;
+  @apply line-through;
 }
 
 div.checked input {
-	background-color: var(--background-b);
-}
-
-div span {
-	flex: 3 1 auto;
+  background-color: var(--background-b);
 }
 
 div input {
-	flex: 0 0 24%;
-	min-width: 0;
-	padding: 0.25em;
-	margin: 0.125em;
-	font-size: 1.25rem;
-	background-color: var(--background-c);
-	border: none;
-	color: var(--text);
-	border-radius: 4px;
+  min-width: 0;
+  padding: 0.25em;
+  margin: 0.125em;
+  font-size: 1.25rem;
+  background-color: var(--background-c);
+  border: none;
+  color: var(--text);
+  border-radius: 4px;
 }
 </style>
