@@ -8,4 +8,11 @@ export default defineNuxtConfig({
       production: process.env.NODE_ENV === "production",
     },
   },
+  css: ["@/assets/css/main.css"],
+  postcss: {
+    plugins: {
+      tailwindcss: {},
+      autoprefixer: {},
+    },
+  },
 })

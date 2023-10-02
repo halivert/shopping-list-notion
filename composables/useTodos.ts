@@ -8,14 +8,17 @@ import { TodoItem } from "~~/types"
 
 const transform = (data: ListBlockChildrenResponse): TodoItem[] =>
   data.results
-    .filter((block: BlockObjectResponse) => block.type === "to_do")
+    .filter((block): block is BlockObjectResponse =>
+      Object.hasOwn(block, "type"),
+    )
+    .filter((block): block is ToDoBlockObjectResponse => "to_do" === block.type)
     .map(
-      (todo: ToDoBlockObjectResponse): TodoItem => ({
+      (todo): TodoItem => ({
         id: todo.id,
         text: todo.to_do.rich_text[0].plain_text,
         checked: todo.to_do.checked,
         price: 0,
-      })
+      }),
     ) ?? []
 
 export const useTodos = (id: Ref<string>) => {

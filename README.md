@@ -1,42 +1,6 @@
-# Nuxt 3 Minimal Starter
+# Shopping list
 
-Look at the [nuxt 3 documentation](https://v3.nuxtjs.org) to learn more.
+![Laravel Forge Site Deployment Status](https://img.shields.io/endpoint?url=https%3A%2F%2Fforge.laravel.com%2Fsite-badges%2F5da6e83a-9157-4933-8207-f3b3c3e4a706&style=flat-square)
 
-## Setup
-
-Make sure to install the dependencies:
-
-```bash
-# yarn
-yarn install
-
-# npm
-npm install
-
-# pnpm
-pnpm install --shamefully-hoist
-```
-
-## Development Server
-
-Start the development server on http://localhost:3000
-
-```bash
-npm run dev
-```
-
-## Production
-
-Build the application for production:
-
-```bash
-npm run build
-```
-
-Locally preview production build:
-
-```bash
-npm run preview
-```
-
-Checkout the [deployment documentation](https://v3.nuxtjs.org/guide/deploy/presets) for more information.
+Hola, aquí podrás utilizar tu lista de compras como una calculadora y también
+almacenar los precios anteriores con un solo toque
