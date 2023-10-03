@@ -80,18 +80,21 @@ onMounted(() => {
 })
 
 watch(total, () => prices.save())
+
+useHead({
+  title: page.value?.title ?? "Página...",
+})
 </script>
 
 <template>
-  <main>
-    <Head>
-      <Title>{{ page?.title ?? "Página..." }}</Title>
-    </Head>
+  <main class="p-2">
     <div v-if="pending">Cargando...</div>
     <div v-else>
       <h1>{{ page?.title }}</h1>
 
-      <header class="header">
+      <header
+        class="text-xl sticky top-0 pt-2 pb-1 bg-white-a flex justify-between z-10"
+      >
         <span>Total: {{ totalFormated }}</span>
         <small>
           <label>
@@ -101,7 +104,7 @@ watch(total, () => prices.save())
         </small>
       </header>
 
-      <ul role="list">
+      <ul role="list" class="max-w-full overflow-hidden space-y-2 my-4">
         <li v-for="item in items" :key="item.id">
           <list-item v-bind="item" v-model:price="item.price">
             {{ item.text }}
@@ -109,89 +112,22 @@ watch(total, () => prices.save())
         </li>
       </ul>
 
-      <div class="buttons">
-        <button @click="confirmReset">Reiniciar</button>
+      <div class="flex">
+        <Button @click="confirmReset">Reiniciar</Button>
       </div>
     </div>
 
     <modal :open="confirmation">
-      <div class="confirmation-modal">
+      <div class="flex flex-col flex-nowrap gap-2">
         {{ message }}
 
-        <div class="buttons">
-          <button class="black" @click="cancel">Cancelar</button>
-          <button @click="confirm">Confirmar</button>
+        <div class="flex justify-between">
+          <Button class="bg-black text-white-a flex-initial text-sm" @click="cancel">
+            Cancelar
+          </Button>
+          <Button class="flex-initial text-sm" @click="confirm">Confirmar</Button>
         </div>
       </div>
     </modal>
   </main>
 </template>
-
-<style scoped>
-main {
-  padding: 0.5em;
-}
-
-h1,
-ul,
-header {
-  padding: 0;
-}
-
-ul {
-  max-width: 100%;
-  overflow: hidden;
-  list-style: none;
-}
-
-ul > :not(:last-of-type) {
-  margin-bottom: 0.5em;
-}
-
-.header {
-  font-size: 1.25rem;
-  position: sticky;
-  top: 0;
-  padding-top: 0.5em;
-  padding-bottom: 0.25em;
-  display: block;
-  background-color: var(--background);
-  display: flex;
-  justify-content: space-between;
-  z-index: 1;
-}
-
-.buttons {
-  display: flex;
-}
-
-.buttons button {
-  flex: 1;
-  font-size: 1rem;
-  background-color: var(--background);
-  color: var(--text);
-  border: 1px solid var(--text);
-  border-radius: 4px;
-  padding: 0.25em 0.75em;
-}
-
-.confirmation-modal {
-  display: flex;
-  flex-flow: column nowrap;
-  gap: 1em;
-}
-
-.confirmation-modal .buttons {
-  justify-content: space-between;
-}
-
-.confirmation-modal .buttons button {
-  flex: 0;
-  font-size: 0.825em;
-}
-
-button.black {
-  background-color: var(--text);
-  color: var(--background);
-}
-</style>

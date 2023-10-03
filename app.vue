@@ -52,12 +52,11 @@ body {
 }
 
 * {
-  accent-color: var(--accent);
-  box-sizing: border-box;
+	@apply box-border accent-green-a;
 }
 
 ::selection {
-  background-color: var(--accent-hover);
+	@apply bg-green-300;
 }
 
 a {
