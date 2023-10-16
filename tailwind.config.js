@@ -17,9 +17,4 @@ module.exports = {
       },
     },
   },
-  plugins: [
-    function ({ addVariant }) {
-      addVariant("initial", "html :where(&)")
-    },
-  ],
 }
