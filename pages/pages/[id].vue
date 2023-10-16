@@ -86,7 +86,7 @@ onMounted(() => {
 })
 
 useHead({
-  title: page.value?.title ?? "Página...",
+  title: computed(() => page.value?.title ?? "Página..."),
 })
 </script>
 
