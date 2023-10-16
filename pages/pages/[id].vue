@@ -85,6 +85,21 @@ onMounted(() => {
   lastPrices.load()
 })
 
+const copy = () => {
+  const text = items.value
+    ?.map((item) => {
+      return [
+        item.text,
+        item.count > 1 ? item.count : "",
+        Number.isNaN(item.price) ? "" : item.price,
+      ].join("\t")
+    })
+    .join("\n")
+
+  if (text)
+    return navigator.clipboard.writeText(text).then(() => alert("Copiado"))
+}
+
 useHead({
   title: computed(() => page.value?.title ?? "Página..."),
 })
@@ -122,8 +137,12 @@ useHead({
         </li>
       </ul>
 
-      <div class="flex">
+      <div class="flex gap-3">
         <app-button @click="confirmReset">Reiniciar</app-button>
+
+        <app-button class="bg-green-a text-white-a" @click="copy"
+          >Copiar</app-button
+        >
       </div>
     </div>
 
