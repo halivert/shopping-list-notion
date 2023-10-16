@@ -23,6 +23,12 @@ const updateCount = (num: number) => {
   emit("update:count", props.count + num)
 }
 
+const total = computed(() => {
+  const total = props.count * props.price
+
+  return Number.isNaN(total) ? 0 : total
+})
+
 const stringPrice = computed(() =>
   props.lastPrice ? getCurrency(props.lastPrice) : "",
 )
@@ -32,19 +38,20 @@ const stringPrice = computed(() =>
   <div
     :class="[
       { checked: checked },
-      'flex gap-5 max-w-full justify-between items-center flex-row flex-nowrap',
+      'flex gap-5 max-w-full justify-between items-center flex-row flex-nowrap relative',
     ]"
   >
     <span class="flex-[3_1_auto]">
       <slot />
     </span>
     <div
-      class="flex-[0_0_40%] inline-flex min-w-0 justify-end gap-3 flex-col-reverse items-end sm:flex-[0_0_60%] sm:flex-row"
+      class="flex-[0_0_50%] inline-flex min-w-0 justify-end gap-3 flex-col-reverse items-end sm:flex-[0_0_60%] sm:flex-row"
     >
       <div class="flex items-center gap-3">
         <button
           class="flex items-center justify-center h-6 w-6 rounded bg-white-c disabled:opacity-30 disabled:cursor-not-allowed"
           @click="updateCount(-1)"
+          @contextmenu.prevent="updateCount(-props.count + 1)"
           :disabled="props.count === 1"
         >
           -
@@ -53,6 +60,7 @@ const stringPrice = computed(() =>
         <button
           class="flex items-center justify-center h-6 w-6 rounded bg-green-b text-white-a"
           @click="updateCount(1)"
+          @contextmenu.prevent
         >
           +
         </button>
@@ -65,6 +73,12 @@ const stringPrice = computed(() =>
         @input="emitChange"
       />
     </div>
+
+    <span
+      v-if="total && props.count > 1"
+      class="absolute top-1 right-6 bg-white-a px-1 rounded"
+      >{{ getCurrency(total) }}</span
+    >
   </div>
 </template>
 

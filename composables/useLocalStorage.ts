@@ -3,15 +3,16 @@ import { Prices, TodoItem } from "~~/types"
 
 export const PRICE_KEY = "price"
 export const LAST_PRICE_KEY = "lastPrice"
+export const COUNT = "count"
 
-interface UsePriceProp {
+interface UseLocalStorageProp {
   items: Ref<TodoItem[] | null>
-  key: typeof PRICE_KEY | typeof LAST_PRICE_KEY
+  key: typeof PRICE_KEY | typeof LAST_PRICE_KEY | typeof COUNT
   onSave?: () => void
   onLoad?: () => void
 }
 
-export const usePrice = (props: UsePriceProp) => {
+export const useLocalStorage = (props: UseLocalStorageProp) => {
   const { items, key, onSave, onLoad } = props
 
   function save(): void {

@@ -57,15 +57,20 @@ const { open, confirmation, message, cancel, confirm } = useConfirmation({
 
 const confirmReset = () => open("Deseas reiniciar la lista?")
 
-const prices = usePrice({
+const prices = useLocalStorage({
   items: originalItems,
   key: PRICE_KEY,
 })
 
-const lastPrices = usePrice({
+const lastPrices = useLocalStorage({
   items: originalItems,
   key: LAST_PRICE_KEY,
 })
+
+const count = useLocalStorage({
+	items: originalItems,
+	key: COUNT
+});
 
 onBeforeMount(() => {
   if (page.value?.id !== pageId.value) {
@@ -77,9 +82,13 @@ onBeforeMount(() => {
 onMounted(() => {
   prices.load()
   lastPrices.load()
+	count.load()
 })
 
-watch(total, () => prices.save())
+watch(total, () => {
+	prices.save();
+	count.save();
+})
 
 useHead({
   title: page.value?.title ?? "Página...",
