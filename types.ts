@@ -9,6 +9,7 @@ export interface TodoItem {
   text: string
   checked: boolean
   price: number
+	count: number
   lastPrice?: number
 }
 

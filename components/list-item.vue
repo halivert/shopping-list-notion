@@ -4,16 +4,23 @@ import { getCurrency } from "~~/helpers/currency"
 const props = defineProps<{
   price: number
   checked: boolean
+  count: number
   lastPrice?: number
 }>()
 
 const emit = defineEmits<{
   "update:price": [price: number]
+  "update:count": [count: number]
 }>()
 
 const emitChange = (event: Event) => {
   const target = event.target as HTMLInputElement
   emit("update:price", target.valueAsNumber)
+}
+
+const updateCount = (num: number) => {
+  if (props.count + num < 1) return
+  emit("update:count", props.count + num)
 }
 
 const stringPrice = computed(() =>
@@ -25,37 +32,48 @@ const stringPrice = computed(() =>
   <div
     :class="[
       { checked: checked },
-      'flex gap-4 max-w-full justify-between items-center flex-row flex-nowrap',
+      'flex gap-5 max-w-full justify-between items-center flex-row flex-nowrap',
     ]"
   >
-    <span class="flex-[3_1_auto]"><slot /></span>
-    <input
-      class="price-input flex-[0_0_24%]"
-      type="number"
-      :placeholder="stringPrice"
-      :value="props.price || null"
-      @input="emitChange"
-    />
+    <span class="flex-[3_1_auto]">
+      <slot />
+    </span>
+    <div
+      class="flex-[0_0_40%] inline-flex min-w-0 justify-end gap-3 flex-col-reverse items-end sm:flex-[0_0_60%] sm:flex-row"
+    >
+      <div class="flex items-center gap-3">
+        <button
+          class="flex items-center justify-center h-6 w-6 rounded bg-white-c disabled:opacity-30 disabled:cursor-not-allowed"
+          @click="updateCount(-1)"
+          :disabled="props.count === 1"
+        >
+          -
+        </button>
+        {{ props.count }}
+        <button
+          class="flex items-center justify-center h-6 w-6 rounded bg-green-b text-white-a"
+          @click="updateCount(1)"
+        >
+          +
+        </button>
+      </div>
+      <input
+        class="flex-[0_0_50%] min-w-0 w-full bg-white-c px-1 py-0.5 text-lg rounded text-black"
+        type="number"
+        :placeholder="stringPrice"
+        :value="props.price || null"
+        @input="emitChange"
+      />
+    </div>
   </div>
 </template>
 
-<style scoped>
+<style scoped lang="postcss">
 div.checked span {
   @apply line-through;
 }
 
 div.checked input {
   background-color: var(--background-b);
-}
-
-div input {
-  min-width: 0;
-  padding: 0.25em;
-  margin: 0.125em;
-  font-size: 1.25rem;
-  background-color: var(--background-c);
-  border: none;
-  color: var(--text);
-  border-radius: 4px;
 }
 </style>

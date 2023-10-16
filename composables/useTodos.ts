@@ -16,6 +16,7 @@ const transform = (data: ListBlockChildrenResponse): TodoItem[] =>
       (todo): TodoItem => ({
         id: todo.id,
         text: todo.to_do.rich_text[0].plain_text,
+        count: 1,
         checked: todo.to_do.checked,
         price: 0,
       }),
