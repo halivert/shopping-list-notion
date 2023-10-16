@@ -22,7 +22,7 @@ const items = computed(
       : originalItems.value) ?? [],
 )
 
-const { total, totalFormated } = useTotal(items)
+const { totalFormated } = useTotal(items)
 
 const reset = () => {
   const allZeros = originalItems.value?.every((item) => !item.price)
@@ -68,9 +68,9 @@ const lastPrices = useLocalStorage({
 })
 
 const count = useLocalStorage({
-	items: originalItems,
-	key: COUNT
-});
+  items: originalItems,
+  key: COUNT,
+})
 
 onBeforeMount(() => {
   if (page.value?.id !== pageId.value) {
@@ -81,13 +81,8 @@ onBeforeMount(() => {
 
 onMounted(() => {
   prices.load()
+  count.load()
   lastPrices.load()
-	count.load()
-})
-
-watch(total, () => {
-	prices.save();
-	count.save();
 })
 
 useHead({
@@ -102,7 +97,7 @@ useHead({
       <h1>{{ page?.title }}</h1>
 
       <header
-        class="text-xl sticky top-0 pt-2 pb-1 bg-white-a flex justify-between z-10"
+        class="text-xl sticky top-0 pt-2 pb-1 bg-white-a flex justify-between z-10 border-b-2 border-white-c -mx-2 px-2"
       >
         <span>Total: {{ totalFormated }}</span>
         <small>
@@ -113,12 +108,14 @@ useHead({
         </small>
       </header>
 
-      <ul role="list" class="max-w-full overflow-hidden space-y-2 my-4">
+      <ul role="list" class="max-w-full overflow-x-hidden space-y-2 my-4 pt-1">
         <li v-for="item in items" :key="item.id">
           <list-item
             v-bind="item"
             v-model:price="item.price"
             v-model:count="item.count"
+            @update:price="prices.save()"
+            @update:count="count.save()"
           >
             {{ item.text }}
           </list-item>
