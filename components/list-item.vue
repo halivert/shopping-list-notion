@@ -45,7 +45,7 @@ const stringPrice = computed(() =>
       <slot />
     </span>
     <div
-      class="flex-[0_0_50%] inline-flex min-w-0 justify-end gap-3 flex-col-reverse items-end sm:flex-[0_0_60%] sm:flex-row"
+      class="flex-[0_0_50%] inline-flex min-w-0 justify-end gap-3 flex-col-reverse items-end px-0.5 sm:flex-[0_0_60%] sm:flex-row"
     >
       <div class="flex items-center gap-3">
         <button
