@@ -71,9 +71,7 @@ const handleSubmit = (e: Event) => {
     <div
       class="flex-1 basis-auto inline-flex min-w-0 justify-end gap-3 flex-col-reverse items-end px-0.5 sm:flex-row"
     >
-      <div
-        class="flex flex-1 items-center justify-end gap-3 max-w-full self-stretch"
-      >
+      <div class="flex flex-1 items-center justify-end max-w-full self-stretch">
         <template v-if="!editCount">
           <button
             class="flex items-center justify-center h-6 w-6 rounded bg-white-c disabled:opacity-30 disabled:cursor-not-allowed"
@@ -81,9 +79,25 @@ const handleSubmit = (e: Event) => {
             @contextmenu.prevent="context(() => updateCount(1))"
             :disabled="props.count === 1"
           >
-            -
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke-width="1.5"
+              stroke="currentColor"
+              class="w-5 h-5"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M18 12H6"
+              />
+            </svg>
           </button>
-          <span @contextmenu.prevent="context(() => (editCount = true))">
+          <span
+            class="px-3"
+            @contextmenu.prevent="context(() => (editCount = true))"
+          >
             {{ props.count }}
           </span>
           <button
@@ -91,21 +105,50 @@ const handleSubmit = (e: Event) => {
             @click="updateCount(Math.floor(props.count + 1))"
             @contextmenu.prevent
           >
-            +
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke-width="1.5"
+              stroke="currentColor"
+              class="w-5 h-5"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M12 6v12m6-6H6"
+              />
+            </svg>
           </button>
         </template>
         <form
           v-else
-          class="max-w-full min-w-0 flex-[0_0_50%]"
+          class="max-w-full min-w-0 flex-[0_0_50%] flex"
           @submit.prevent="handleSubmit"
         >
           <input
-            class="min-w-0 max-w-full bg-white-c px-1 py-0.5 text-lg rounded text-black"
+            class="min-w-0 max-w-full bg-white-c px-1 py-0.5 text-lg rounded-l text-black"
             name="count"
             type="number"
             step="0.01"
             :value="props.count"
           />
+
+          <button class="bg-green-a text-white-a rounded-r w-full px-1">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke-width="1.5"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M4.5 12.75l6 6 9-13.5"
+              />
+            </svg>
+          </button>
         </form>
       </div>
       <input
