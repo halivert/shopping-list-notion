@@ -36,7 +36,7 @@ const stringPrice = computed(() =>
 const editCount = ref(false)
 
 const context = (fn?: () => void) => {
-  navigator.vibrate([100, 100, 200])
+  navigator.vibrate([100, 100, 150])
 
   fn?.()
 }
