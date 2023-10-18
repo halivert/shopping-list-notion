@@ -18,9 +18,9 @@ const emitChange = (event: Event) => {
   emit("update:price", target.valueAsNumber)
 }
 
-const updateCount = (num: number) => {
-  if (props.count + num < 1) return
-  emit("update:count", props.count + num)
+const updateCount = (newCount: number) => {
+  if (newCount <= 0) return
+  emit("update:count", newCount)
 }
 
 const total = computed(() => {
@@ -32,6 +32,30 @@ const total = computed(() => {
 const stringPrice = computed(() =>
   props.lastPrice ? getCurrency(props.lastPrice) : "",
 )
+
+const editCount = ref(false)
+
+const context = (fn?: () => void) => {
+  navigator.vibrate([100, 100, 200])
+
+  fn?.()
+}
+
+const handleSubmit = (e: Event) => {
+  const form = e.target as HTMLFormElement
+  const countInput = form.elements.namedItem("count")
+
+  if (countInput instanceof HTMLInputElement) {
+    const count = countInput.valueAsNumber
+
+    if (Number.isNaN(count)) {
+      return
+    }
+
+    updateCount(count)
+    editCount.value = false
+  }
+}
 </script>
 
 <template>
@@ -41,32 +65,51 @@ const stringPrice = computed(() =>
       'flex gap-5 max-w-full justify-between items-center flex-row flex-nowrap relative',
     ]"
   >
-    <span class="flex-[3_1_auto]">
+    <span class="flex-[3] shrink-0 basis-[30%]">
       <slot />
     </span>
     <div
-      class="flex-[0_0_50%] inline-flex min-w-0 justify-end gap-3 flex-col-reverse items-end px-0.5 sm:flex-[0_0_60%] sm:flex-row"
+      class="flex-1 basis-auto inline-flex min-w-0 justify-end gap-3 flex-col-reverse items-end px-0.5 sm:flex-row"
     >
-      <div class="flex items-center gap-3">
-        <button
-          class="flex items-center justify-center h-6 w-6 rounded bg-white-c disabled:opacity-30 disabled:cursor-not-allowed"
-          @click="updateCount(-1)"
-          @contextmenu.prevent="updateCount(-props.count + 1)"
-          :disabled="props.count === 1"
+      <div
+        class="flex flex-1 items-center justify-end gap-3 max-w-full self-stretch"
+      >
+        <template v-if="!editCount">
+          <button
+            class="flex items-center justify-center h-6 w-6 rounded bg-white-c disabled:opacity-30 disabled:cursor-not-allowed"
+            @click="updateCount(Math.ceil(props.count - 1))"
+            @contextmenu.prevent="context(() => updateCount(1))"
+            :disabled="props.count === 1"
+          >
+            -
+          </button>
+          <span @contextmenu.prevent="context(() => (editCount = true))">
+            {{ props.count }}
+          </span>
+          <button
+            class="flex items-center justify-center h-6 w-6 rounded bg-green-b text-white-a"
+            @click="updateCount(Math.floor(props.count + 1))"
+            @contextmenu.prevent
+          >
+            +
+          </button>
+        </template>
+        <form
+          v-else
+          class="max-w-full min-w-0 flex-[0_0_50%]"
+          @submit.prevent="handleSubmit"
         >
-          -
-        </button>
-        {{ props.count }}
-        <button
-          class="flex items-center justify-center h-6 w-6 rounded bg-green-b text-white-a"
-          @click="updateCount(1)"
-          @contextmenu.prevent
-        >
-          +
-        </button>
+          <input
+            class="min-w-0 max-w-full bg-white-c px-1 py-0.5 text-lg rounded text-black"
+            name="count"
+            type="number"
+            step="0.01"
+            :value="props.count"
+          />
+        </form>
       </div>
       <input
-        class="flex-[0_0_50%] min-w-0 w-full bg-white-c px-1 py-0.5 text-lg rounded text-black"
+        class="flex-[0_0_40%] min-w-0 w-full bg-white-c px-1 py-0.5 text-lg rounded text-black"
         type="number"
         :placeholder="stringPrice"
         :value="props.price || null"
@@ -75,14 +118,14 @@ const stringPrice = computed(() =>
     </div>
 
     <span
-      v-if="total && props.count > 1"
-      class="absolute top-1 right-6 bg-white-a px-1 rounded"
+      v-if="total && props.count !== 1"
+      class="absolute top-1 right-7 bg-white-a px-1 rounded"
       >{{ getCurrency(total) }}</span
     >
   </div>
 </template>
 
-<style scoped lang="postcss">
+<style lang="postcss">
 div.checked span {
   @apply line-through;
 }

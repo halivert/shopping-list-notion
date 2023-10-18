@@ -90,7 +90,7 @@ const copy = () => {
     ?.map((item) => {
       return [
         item.text,
-        item.count > 1 ? item.count : "",
+				item.count || "",
         Number.isNaN(item.price) ? "" : item.price,
       ].join("\t")
     })
