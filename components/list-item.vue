@@ -59,112 +59,84 @@ const handleSubmit = (e: Event) => {
 </script>
 
 <template>
-  <div
-    :class="[
-      { checked: checked },
-      'flex gap-5 max-w-full justify-between items-center flex-row flex-nowrap relative',
-    ]"
-  >
-    <span class="flex-[3] shrink-0 basis-[30%]">
+  <div :class="[{ checked: checked }, 'flex gap-5 flex-nowrap items-start']">
+    <span class="basis-2/6 shrink-0">
       <slot />
     </span>
-    <div
-      class="flex-1 basis-auto inline-flex min-w-0 justify-end gap-3 flex-col-reverse items-end px-0.5 sm:flex-row"
-    >
-      <div class="flex flex-1 items-center justify-end max-w-full self-stretch">
-        <template v-if="!editCount">
-          <button
-            class="flex items-center justify-center h-6 w-6 rounded bg-white-c disabled:opacity-30 disabled:cursor-not-allowed"
-            @click="updateCount(Math.ceil(props.count - 1))"
-            @contextmenu.prevent="context(() => updateCount(1))"
-            :disabled="props.count === 1"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke-width="1.5"
-              stroke="currentColor"
-              class="w-5 h-5"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                d="M18 12H6"
-              />
-            </svg>
-          </button>
-          <span
-            class="px-3"
-            @contextmenu.prevent="context(() => (editCount = true))"
-          >
-            {{ props.count }}
-          </span>
-          <button
-            class="flex items-center justify-center h-6 w-6 rounded bg-green-b text-white-a"
-            @click="updateCount(Math.floor(props.count + 1))"
-            @contextmenu.prevent
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke-width="1.5"
-              stroke="currentColor"
-              class="w-5 h-5"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                d="M12 6v12m6-6H6"
-              />
-            </svg>
-          </button>
-        </template>
-        <form
-          v-else
-          class="max-w-full min-w-0 flex-[0_0_50%] flex"
-          @submit.prevent="handleSubmit"
+    <div class="flex-1 flex gap-3 px-0.5 flex-wrap-reverse justify-end">
+      <div
+        v-if="!editCount"
+        class="flex items-center justify-between w-1/2 sm:w-1/3"
+      >
+        <button
+          class="h-6 w-6 rounded bg-white-c disabled:opacity-30 disabled:cursor-not-allowed p-0.5"
+          @click="updateCount(Math.ceil(props.count - 1))"
+          @contextmenu.prevent="context(() => updateCount(1))"
+          :disabled="props.count === 1"
         >
-          <input
-            class="min-w-0 max-w-full bg-white-c px-1 py-0.5 text-lg rounded-l text-black"
-            name="count"
-            type="number"
-            step="0.01"
-            :value="props.count"
-          />
-
-          <button class="bg-green-a text-white-a rounded-r w-full px-1">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke-width="1.5"
-              stroke="currentColor"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                d="M4.5 12.75l6 6 9-13.5"
-              />
-            </svg>
-          </button>
-        </form>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke-width="1.5"
+            stroke="currentColor"
+            class="mx-auto"
+          >
+            <path stroke-linecap="round" stroke-linejoin="round" d="M18 12H6" />
+          </svg>
+        </button>
+        <span
+          class="px-3"
+          @contextmenu.prevent="context(() => (editCount = true))"
+        >
+          {{ props.count }}
+        </span>
+        <button
+          class="h-6 w-6 rounded bg-green-b text-white-a p-0.5"
+          @click="updateCount(Math.floor(props.count + 1))"
+          @contextmenu.prevent
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke-width="1.5"
+            stroke="currentColor"
+            class="mx-auto"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M12 6v12m6-6H6"
+            />
+          </svg>
+        </button>
       </div>
-      <input
-        class="flex-[0_0_40%] min-w-0 w-full bg-white-c px-1 py-0.5 text-lg rounded text-black"
-        type="number"
-        :placeholder="stringPrice"
-        :value="props.price || null"
-        @input="emitChange"
-      />
-    </div>
+      <form v-else @submit.prevent="handleSubmit" class="w-1/2 sm:w-1/3">
+        <input
+          class="bg-white-c px-1 py-0.5 text-lg rounded text-black w-full"
+          name="count"
+          type="number"
+          step="0.01"
+          :value="props.count"
+        />
+      </form>
+      <div class="relative">
+        <input
+          class="bg-white-c px-1 py-0.5 text-lg rounded text-black w-full"
+          type="number"
+          :placeholder="stringPrice"
+          :value="props.price || null"
+          @input="emitChange"
+        />
 
-    <span
-      v-if="total && props.count !== 1"
-      class="absolute top-1 right-7 bg-white-a px-1 rounded"
-      >{{ getCurrency(total) }}</span
-    >
+        <span
+          v-if="total && props.count !== 1"
+          class="absolute top-1 right-7 bg-white-a px-1 rounded"
+          >{{ getCurrency(total) }}</span
+        >
+      </div>
+    </div>
   </div>
 </template>
 
