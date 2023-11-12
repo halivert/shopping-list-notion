@@ -25,37 +25,21 @@ const items = computed(
 const { totalFormated } = useTotal(items)
 
 const reset = () => {
-  const allZeros = originalItems.value?.every((item) => !item.price)
-
   const lastPrices: Prices = JSON.parse(
     localStorage.getItem(LAST_PRICE_KEY) ?? "{}",
   )
 
-  if (allZeros) {
-    originalItems.value?.forEach((item) => {
-      item.lastPrice = 0
-      lastPrices[item.id] = 0
-    })
-  } else {
-    originalItems.value?.forEach((item) => {
-      if (!item.price) return
-      item.lastPrice = item.price
-      lastPrices[item.id] = item.price
-    })
-  }
+  originalItems.value?.forEach((item) => {
+    if (!item.price) return
+    item.lastPrice = item.price
+    lastPrices[item.id] = item.price
+  })
 
   localStorage.setItem(LAST_PRICE_KEY, JSON.stringify(lastPrices))
 
   originalItems.value?.forEach((item) => {
     item.price = 0
   })
-}
-
-const confirmReset = () => {
-  const shouldReset = confirm("Deseas reiniciar la lista?")
-  if (shouldReset) {
-    reset()
-  }
 }
 
 const prices = useLocalStorage({
@@ -139,7 +123,7 @@ useHead({
       </ul>
 
       <div class="flex gap-3">
-        <app-button @click="confirmReset">Reiniciar</app-button>
+        <app-button @click="reset">Reiniciar</app-button>
 
         <app-button class="bg-green-a text-white-a" @click="copy"
           >Copiar</app-button
