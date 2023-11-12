@@ -24,15 +24,12 @@ useHead({
       ? [{ async: true, src: "https://cdn.splitbee.io/sb.js" }]
       : []),
   ],
+  title: "Lista de compras",
 })
 </script>
 
 <template>
   <main>
-    <Head>
-      <Title>Lista de compras</Title>
-    </Head>
-
     <div>
       <section class="hero">
         <h1>Lista de compras</h1>

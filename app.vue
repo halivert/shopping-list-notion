@@ -1,10 +1,8 @@
 <template>
-  <div>
-    <Head>
-      <link rel="icon" type="image/x-icon" href="/favicon.webp" />
-    </Head>
+  <NuxtLayout>
+    <Head rel="icon" type="image/x-icon" href="/favicon.webp"></Head>
     <NuxtPage />
-  </div>
+  </NuxtLayout>
 </template>
 
 <style>
@@ -52,11 +50,11 @@ body {
 }
 
 * {
-	@apply box-border accent-green-a;
+  @apply box-border accent-green-a;
 }
 
 ::selection {
-	@apply bg-green-300;
+  @apply bg-green-300;
 }
 
 a {

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Prices } from "~~/types"
+import { type Prices } from "~~/types"
 
 definePageMeta({ middleware: "auth" })
 
@@ -51,11 +51,12 @@ const reset = () => {
   })
 }
 
-const { open, confirmation, message, cancel, confirm } = useConfirmation({
-  confirm: reset,
-})
-
-const confirmReset = () => open("Deseas reiniciar la lista?")
+const confirmReset = () => {
+  const shouldReset = confirm("Deseas reiniciar la lista?")
+  if (shouldReset) {
+    reset()
+  }
+}
 
 const prices = useLocalStorage({
   items: originalItems,
@@ -90,7 +91,7 @@ const copy = () => {
     ?.map((item) => {
       return [
         item.text,
-				item.count || "",
+        item.count || "",
         Number.isNaN(item.price) ? "" : item.price,
       ].join("\t")
     })
@@ -145,23 +146,5 @@ useHead({
         >
       </div>
     </div>
-
-    <modal :open="confirmation">
-      <div class="flex flex-col flex-nowrap gap-2">
-        {{ message }}
-
-        <div class="flex justify-between">
-          <app-button
-            class="bg-black text-white-a flex-initial text-sm"
-            @click="cancel"
-          >
-            Cancelar
-          </app-button>
-          <app-button class="flex-initial text-sm" @click="confirm"
-            >Confirmar</app-button
-          >
-        </div>
-      </div>
-    </modal>
   </main>
 </template>
