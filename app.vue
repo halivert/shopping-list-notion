@@ -1,11 +1,13 @@
 <template>
   <NuxtLayout>
-    <Head rel="icon" type="image/x-icon" href="/favicon.webp"></Head>
+    <Head>
+      <Link rel="icon" type="image/x-icon" href="/favicon.webp" />
+    </Head>
     <NuxtPage />
   </NuxtLayout>
 </template>
 
-<style>
+<style lang="postcss">
 :root {
   --text: #333;
   --background: #d5d0cd;

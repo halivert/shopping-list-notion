@@ -1,16 +1,9 @@
 <template>
-	<main>
-		<Head>
-			<Title>Términos del servicio</Title>
-		</Head>
-
-		<h1>Términos del servicio</h1>
-
-		<p>
-			Puedes usar esta integración mientras no la utilices para hacer algo
-			ilegal, si lo haces, entonces no tienes permiso para utilizarla.
-		</p>
-	</main>
+  <NuxtLayout name="page" title="Términos del servicio">
+    <p>
+      Puedes usar esta integración mientras no la utilices para hacer algo en
+      contra de las leyes de cualquier país (en cualquier parte del mundo), si
+      lo haces entonces no tienes permiso para utilizarla.
+    </p>
+  </NuxtLayout>
 </template>
-
-<style scoped></style>
