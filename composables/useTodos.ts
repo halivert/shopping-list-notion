@@ -1,10 +1,10 @@
-import {
+import type {
   BlockObjectResponse,
   ListBlockChildrenResponse,
   ToDoBlockObjectResponse,
 } from "@notionhq/client/build/src/api-endpoints"
-import { Ref } from "vue"
-import { TodoItem } from "~~/types"
+import { type Ref } from "vue"
+import { type TodoItem } from "~~/types"
 
 const transform = (data: ListBlockChildrenResponse): TodoItem[] =>
   data.results
