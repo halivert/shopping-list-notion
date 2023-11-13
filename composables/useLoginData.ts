@@ -1,5 +1,5 @@
 import { type OauthTokenResponse } from "@notionhq/client/build/src/api-endpoints"
-import { CookieRef } from "nuxt/dist/app/composables"
+import { type CookieRef } from "nuxt/dist/app/composables"
 
 export const useLoginData = (): CookieRef<OauthTokenResponse> => {
   const config = useRuntimeConfig()

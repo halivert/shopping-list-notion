@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import { type Prices } from "~~/types"
-
 definePageMeta({ middleware: "auth" })
 
 const route = useRoute()
@@ -25,36 +23,15 @@ const items = computed(
 const { totalFormated } = useTotal(items)
 
 const reset = () => {
-  const lastPrices: Prices = JSON.parse(
-    localStorage.getItem(LAST_PRICE_KEY) ?? "{}",
-  )
-
   originalItems.value?.forEach((item) => {
-    if (!item.price) return
     item.lastPrice = item.price
-    lastPrices[item.id] = item.price
-  })
-
-  localStorage.setItem(LAST_PRICE_KEY, JSON.stringify(lastPrices))
-
-  originalItems.value?.forEach((item) => {
     item.price = 0
   })
 }
 
-const prices = useLocalStorage({
+const storedItems = useLocalStorage({
   items: originalItems,
-  key: PRICE_KEY,
-})
-
-const lastPrices = useLocalStorage({
-  items: originalItems,
-  key: LAST_PRICE_KEY,
-})
-
-const count = useLocalStorage({
-  items: originalItems,
-  key: COUNT,
+  key: pageId,
 })
 
 onBeforeMount(() => {
@@ -65,9 +42,7 @@ onBeforeMount(() => {
 })
 
 onMounted(() => {
-  prices.load()
-  count.load()
-  lastPrices.load()
+  storedItems.load()
 })
 
 const copy = () => {
@@ -84,51 +59,54 @@ const copy = () => {
   if (text)
     return navigator.clipboard.writeText(text).then(() => alert("Copiado"))
 }
-
-useHead({
-  title: computed(() => page.value?.title ?? "Página..."),
-})
 </script>
 
 <template>
-  <main class="p-2">
-    <div v-if="pending">Cargando...</div>
-    <div v-else>
-      <h1>{{ page?.title }}</h1>
-
-      <header
-        class="text-xl sticky top-0 pt-2 pb-1 bg-white-a flex justify-between z-10 border-b-2 border-white-c -mx-2 px-2"
-      >
-        <span>Total: {{ totalFormated }}</span>
-        <small>
-          <label>
-            Ocultar marcados
-            <input type="checkbox" v-model="hideChecked" />
-          </label>
-        </small>
-      </header>
-
-      <ul role="list" class="max-w-full overflow-x-hidden space-y-2 my-4 pt-1">
-        <li v-for="item in items" :key="item.id">
-          <list-item
-            v-bind="item"
-            v-model:price="item.price"
-            v-model:count="item.count"
-            @update:price="prices.save()"
-            @update:count="count.save()"
-          >
-            {{ item.text }}
-          </list-item>
-        </li>
-      </ul>
-
-      <div class="flex gap-3">
-        <app-button @click="reset">Reiniciar</app-button>
-
-        <app-button class="bg-green-a text-white-a" @click="copy"
-          >Copiar</app-button
-        >
+  <NuxtLayout :title="page?.title ?? 'Página...'">
+    <main class="p-2 min-h-screen">
+      <div v-if="pending" class="text-center text-xl font-semibold">
+        Cargando...
       </div>
-    </div>
-  </main>
+      <div v-else>
+        <h1 class="text-2xl font-semibold">{{ page?.title }}</h1>
+
+        <header
+          class="text-xl sticky top-0 pt-2 pb-1 bg-white-a flex justify-between z-10 border-b-2 border-white-c -mx-2 px-2"
+        >
+          <span>Total: {{ totalFormated }}</span>
+          <small>
+            <label>
+              Ocultar marcados
+              <input type="checkbox" v-model="hideChecked" />
+            </label>
+          </small>
+        </header>
+
+        <ul
+          role="list"
+          class="max-w-full overflow-x-hidden space-y-2 my-4 pt-1"
+        >
+          <li v-for="item in items" :key="item.id">
+            <list-item
+              v-bind="item"
+              v-model:price="item.price"
+              v-model:count="item.count"
+              @update:price="storedItems.save()"
+              @update:count="storedItems.save()"
+            >
+              {{ item.text }}
+            </list-item>
+          </li>
+        </ul>
+
+        <div class="flex gap-3">
+          <app-button @click="reset">Reiniciar</app-button>
+
+          <app-button class="bg-green-a text-white-a" @click="copy">
+            Copiar
+          </app-button>
+        </div>
+      </div>
+    </main>
+  </NuxtLayout>
 </template>

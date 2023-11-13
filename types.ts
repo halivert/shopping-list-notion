@@ -1,7 +1,12 @@
 import { type PageObjectResponse } from "@notionhq/client/build/src/api-endpoints"
 
 export interface Page extends PageObjectResponse {
-  title?: string
+  title: string
+  items: Array<{
+    id: string
+    price: number
+    count: number
+  }>
 }
 
 export interface TodoItem {
@@ -12,5 +17,3 @@ export interface TodoItem {
   count: number
   lastPrice?: number
 }
-
-export type Prices = Record<string, number>

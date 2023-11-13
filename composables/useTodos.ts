@@ -27,7 +27,7 @@ export const useTodos = (id: Ref<string>) => {
     data: items,
     pending,
     refresh,
-  } = useLazyFetch(`/api/notion/pages/${id.value}/items`, {
+  } = useFetch(`/api/notion/pages/${id.value}/items`, {
     transform,
     headers: useRequestHeaders(["cookie"]),
   })

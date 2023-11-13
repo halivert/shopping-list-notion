@@ -1,49 +1,79 @@
-import { Ref } from "vue"
-import { Prices, TodoItem } from "~~/types"
+import { type Ref, type WatchStopHandle } from "vue"
+import { type TodoItem } from "~~/types"
 
-export const PRICE_KEY = "price"
-export const LAST_PRICE_KEY = "lastPrice"
-export const COUNT = "count"
+interface LocalStorageItem {
+  id: string
+  price: number
+  count: number
+  lastPrice?: number
+}
+
+type LocalStorageItems = Record<string, LocalStorageItem>
 
 interface UseLocalStorageProp {
   items: Ref<TodoItem[] | null>
-  key: typeof PRICE_KEY | typeof LAST_PRICE_KEY | typeof COUNT
+  key: ComputedRef<string> | ComputedRef<string | undefined> | string
   onSave?: () => void
   onLoad?: () => void
 }
 
+export function getSavedItems(key: string): LocalStorageItems {
+  return JSON.parse(localStorage.getItem(key) ?? "{}")
+}
+
 export const useLocalStorage = (props: UseLocalStorageProp) => {
-  const { items, key, onSave, onLoad } = props
+  const { items, key: propKey, onSave, onLoad } = props
+
+  const key = isRef(propKey) ? propKey : computed(() => propKey)
 
   function save(): void {
-    if (!items.value) throw new Error("Error saving, please try again")
+    if (!items.value || !key.value)
+      throw new Error("Error saving, please try again")
 
-    const savedPrices = JSON.parse(localStorage.getItem(key) ?? "{}") as Prices
+    const savedItems = getSavedItems(key.value)
 
-    const prices: Prices = Object.fromEntries(
-      items.value.map((item) => [item.id, item[key] || 0]),
+    const newItems = Object.fromEntries(
+      items.value.map((item): [string, LocalStorageItem] => [
+        item.id,
+        {
+          count: item.count,
+          price: item.price,
+          id: item.id,
+          lastPrice: item.lastPrice,
+        },
+      ]),
     )
 
-    localStorage.setItem(key, JSON.stringify({ ...savedPrices, ...prices }))
+    const toSave = { ...savedItems, ...newItems }
+
+    localStorage.setItem(key.value, JSON.stringify(toSave))
 
     return onSave?.()
   }
 
   function load(): void {
-    if (!items.value) return
+    const internalLoad = (stop?: WatchStopHandle) => {
+      if (!key.value || !items.value) return
 
-    const prices = JSON.parse(localStorage.getItem(key) ?? "{}") as Prices
+      const savedItems = getSavedItems(key.value)
 
-    const internalLoad = () => {
-      items.value?.forEach((item) => {
-        if (prices[item.id]) item[key] = prices[item.id]
+      items.value.forEach((item) => {
+        if (!savedItems[item.id]) {
+          return
+        }
+
+        Object.assign(item, {
+          count: savedItems[item.id].count,
+          lastPrice: savedItems[item.id].lastPrice,
+          price: savedItems[item.id].price,
+        })
       })
 
+      stop?.()
       return onLoad?.()
     }
 
-    if (items.value) internalLoad()
-    watch(items, internalLoad)
+    const stop: WatchStopHandle = watch([items, key], () => internalLoad(stop))
   }
 
   return { save, load }

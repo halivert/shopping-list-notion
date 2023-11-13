@@ -2,8 +2,8 @@
 import { getCurrency } from "~~/helpers/currency"
 
 const props = defineProps<{
-  price: number
   checked: boolean
+  price: number
   count: number
   lastPrice?: number
 }>()
@@ -13,7 +13,7 @@ const emit = defineEmits<{
   "update:count": [count: number]
 }>()
 
-const emitChange = (event: Event) => {
+const updatePrice = (event: Event) => {
   const target = event.target as HTMLInputElement
   emit("update:price", target.valueAsNumber)
 }
@@ -29,7 +29,7 @@ const total = computed(() => {
   return Number.isNaN(total) ? 0 : total
 })
 
-const stringPrice = computed(() =>
+const lastPriceFormatted = computed(() =>
   props.lastPrice ? getCurrency(props.lastPrice) : "",
 )
 
@@ -45,22 +45,24 @@ const handleSubmit = (e: Event) => {
   const form = e.target as HTMLFormElement
   const countInput = form.elements.namedItem("count")
 
-  if (countInput instanceof HTMLInputElement) {
-    const count = countInput.valueAsNumber
-
-    if (Number.isNaN(count)) {
-      return
-    }
-
-    updateCount(count)
-    editCount.value = false
+  if (!(countInput instanceof HTMLInputElement)) {
+    return
   }
+
+  const count = countInput.valueAsNumber
+
+  if (Number.isNaN(count)) {
+    return
+  }
+
+  updateCount(count)
+  editCount.value = false
 }
 </script>
 
 <template>
   <div :class="[{ checked: checked }, 'flex gap-5 flex-nowrap items-start']">
-    <span class="basis-2/6 shrink-0">
+    <span class="basis-2/6 shrink-0 slot">
       <slot />
     </span>
     <div class="flex-1 flex gap-3 px-0.5 flex-wrap-reverse justify-end">
@@ -125,9 +127,9 @@ const handleSubmit = (e: Event) => {
         <input
           class="bg-white-c px-1 py-0.5 text-lg rounded text-black w-full"
           type="number"
-          :placeholder="stringPrice"
+          :placeholder="lastPriceFormatted"
           :value="props.price || null"
-          @input="emitChange"
+          @input="updatePrice"
         />
 
         <span
@@ -141,7 +143,7 @@ const handleSubmit = (e: Event) => {
 </template>
 
 <style lang="postcss">
-div.checked span {
+div.checked span.slot {
   @apply line-through;
 }
 

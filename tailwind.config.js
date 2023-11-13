@@ -1,6 +1,11 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-  content: ["./components/**/*.{js,vue,ts}", "./pages/**/*.vue", "./app.vue"],
+  content: [
+    "./components/**/*.{js,vue,ts}",
+    "./layouts/**/*.vue",
+    "./pages/**/*.vue",
+    "./app.vue",
+  ],
   theme: {
     extend: {
       colors: {
@@ -14,6 +19,12 @@ module.exports = {
           a: "var(--accent)",
           b: "var(--accent-hover)",
         },
+      },
+      height: {
+        screen: "100dvh",
+      },
+      minHeight: {
+        screen: "100dvh",
       },
     },
   },

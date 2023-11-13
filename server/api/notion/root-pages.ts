@@ -1,5 +1,5 @@
 import { type PageObjectResponse } from "@notionhq/client/build/src/api-endpoints"
-import { Page } from "~~/types"
+import { type Page } from "~~/types"
 
 export default defineEventHandler(async (event): Promise<Page[] | void> => {
   const notion = useNotion(getCookie(event, "loginData"))
@@ -24,18 +24,19 @@ export default defineEventHandler(async (event): Promise<Page[] | void> => {
 
   const promiseResults = await Promise.allSettled(promises)
 
-  return results.map((page, idx): Page => {
-    const promiseResult = promiseResults[idx]
+  return promiseResults
+    .map((result, idx): Page | null => {
+      if (result.status !== "fulfilled") return null
+      if (result.value.object !== "list") return null
 
-    if (promiseResult.status !== "fulfilled") return page
-    if (promiseResult.value.object !== "list") return page
+      const title = result.value.results[0]
+      if (title.type !== "title") return null
 
-    const title = promiseResult.value.results[0]
-    if (title.type !== "title") return page
-
-    return {
-      ...results[idx],
-      title: title.title.plain_text,
-    }
-  })
+      return {
+        ...results[idx],
+        items: [],
+        title: title.title.plain_text,
+      }
+    })
+    .filter((page): page is Page => !!page)
 })

@@ -1,50 +1,84 @@
 <script setup lang="ts">
+import { getCurrency } from "~/helpers/currency"
+
+definePageMeta({ middleware: "auth" })
+
 const { pages, pending } = usePages()
 
-definePageMeta({
-  middleware: "auth",
-})
+const getTotal = (pageId: string): number => {
+  return Object.values(getSavedItems(pageId)).reduce(
+    (a, { count, price }) => a + count * price,
+    0,
+  )
+}
 
-useHead({
-  title: "Lista de compras",
-})
+const getCount = (pageId: string): number => {
+  return Object.values(getSavedItems(pageId)).reduce(
+    (a, { price, count }) => a + (price ? count : 0),
+    0,
+  )
+}
+
+const total = computed(
+  () => pages.value?.reduce((a, page) => a + getTotal(page.id), 0) ?? 0,
+)
+
+const totalCount = computed(
+  () => pages.value?.reduce((a, page) => a + getCount(page.id), 0) ?? 0,
+)
 </script>
 
 <template>
-  <main class="h-[100dvh] p-2 flex flex-col flex-nowrap">
-    <div class="flex-1">
-      <h1 class="text-4xl text-center">Selecciona una página</h1>
-      <ul
-        v-if="!pending"
-        role="list"
-        class="mt-20 flex flex-col flex-nowrap justify-around items-center gap-8"
-      >
-        <li v-for="page in pages">
-          <NuxtLink
-            class="text-3xl"
-            :to="{ name: 'pages-id', params: { id: page.id } }"
-          >
-            {{ page.title }}
-          </NuxtLink>
-        </li>
-        <li v-if="!pages?.length">¡Ups! no compartiste ninguna página</li>
-      </ul>
-      <ul
-        v-else
-        class="text-xl mt-20 flex flex-col flex-nowrap justify-around items-center gap-8"
-      >
-        <li>Cargando...</li>
-      </ul>
-    </div>
-
-    <footer class="flex items-center justify-end">
-      <form class="inline-block" method="POST" action="/api/logout">
-        <button
-          class="border border-white-c bg-white-b text-black font-base rounded py-1 px-3"
+  <NuxtLayout>
+    <main class="h-screen p-2 flex flex-col flex-nowrap">
+      <div class="flex-1">
+        <header
+          class="text-xl sticky top-0 pt-2 pb-1 bg-white-a flex items-center justify-around z-10 border-b-2 border-white-c -mx-2 px-2"
         >
-          Cerrar sesión
-        </button>
-      </form>
-    </footer>
-  </main>
+          <h1 class="text-4xl text-center">Selecciona una página</h1>
+
+          <ClientOnly fallback="Total...">
+            <span>Total: {{ getCurrency(total) }} ({{ totalCount }})</span>
+          </ClientOnly>
+        </header>
+
+        <ul
+          v-if="pending"
+          class="text-xl mt-20 flex flex-col flex-nowrap justify-around items-center gap-8"
+        >
+          <li>Cargando...</li>
+        </ul>
+        <ul
+          v-else
+          role="list"
+          class="mt-10 flex flex-col flex-nowrap justify-around items-center gap-5"
+        >
+          <li v-for="page in pages">
+            <NuxtLink
+              class="text-3xl"
+              :to="{ name: 'pages-id', params: { id: page.id } }"
+            >
+              {{ page.title }}
+            </NuxtLink>
+            <ClientOnly fallback-tag="p" fallback="Total...">
+              <p v-if="getCount(page.id)">
+                Total: {{ getCurrency(getTotal(page.id)) }} ({{
+                  getCount(page.id)
+                }})
+              </p>
+            </ClientOnly>
+          </li>
+          <li v-if="!pages?.length">¡Ups! no compartiste ninguna página</li>
+        </ul>
+      </div>
+
+      <footer class="flex items-center justify-end">
+        <form class="inline-block" method="POST" action="/api/logout">
+          <app-button class="border border-white-c bg-white-b py-1 px-3">
+            Cerrar sesión
+          </app-button>
+        </form>
+      </footer>
+    </main>
+  </NuxtLayout>
 </template>

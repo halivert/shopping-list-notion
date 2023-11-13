@@ -1,10 +1,5 @@
 <template>
-  <NuxtLayout>
-    <Head>
-      <Link rel="icon" type="image/x-icon" href="/favicon.webp" />
-    </Head>
-    <NuxtPage />
-  </NuxtLayout>
+  <NuxtPage />
 </template>
 
 <style lang="postcss">
