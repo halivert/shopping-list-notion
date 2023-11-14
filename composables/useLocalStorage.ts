@@ -49,11 +49,11 @@ function legacyLoad(items: Ref<TodoItem[] | null>): void {
     }
 
     if (lastPrices[item.id]) {
-      item.price = lastPrices[item.id]
+      item.lastPrice = lastPrices[item.id]
     }
 
     if (count[item.id]) {
-      item.price = count[item.id]
+      item.count = count[item.id]
     }
   })
 }
