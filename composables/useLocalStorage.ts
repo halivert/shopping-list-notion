@@ -73,6 +73,10 @@ export const useLocalStorage = (props: UseLocalStorageProp) => {
       return onLoad?.()
     }
 
+    if (items.value && key.value) {
+      return internalLoad()
+    }
+
     const stop: WatchStopHandle = watch([items, key], () => internalLoad(stop))
   }
 

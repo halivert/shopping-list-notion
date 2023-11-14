@@ -33,12 +33,17 @@ const totalCount = computed(
     <main class="h-screen p-2 flex flex-col flex-nowrap">
       <div class="flex-1">
         <header
-          class="text-xl sticky top-0 pt-2 pb-1 bg-white-a flex items-center justify-around z-10 border-b-2 border-white-c -mx-2 px-2"
+          class="sticky top-0 pt-2 pb-1 bg-white-a flex items-center justify-around z-10 border-b-2 border-white-c -mx-2 px-2 gap-2 flex-col sm:flex-row"
         >
-          <h1 class="text-4xl text-center">Selecciona una página</h1>
+          <h1 class="text-3xl text-center">Selecciona una página</h1>
 
-          <ClientOnly fallback="Total...">
-            <span>Total: {{ getCurrency(total) }} ({{ totalCount }})</span>
+          <ClientOnly>
+            <span class="self-end sm:self-center"
+              >Total: {{ getCurrency(total) }} ({{ totalCount }})</span
+            >
+            <template #fallback>
+              <span class="self-end sm:self-center">Total...</span>
+            </template>
           </ClientOnly>
         </header>
 
@@ -55,7 +60,7 @@ const totalCount = computed(
         >
           <li v-for="page in pages">
             <NuxtLink
-              class="text-3xl"
+              class="text-2xl"
               :to="{ name: 'pages-id', params: { id: page.id } }"
             >
               {{ page.title }}

@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import type { TodoItem } from "~/types"
+
 definePageMeta({ middleware: "auth" })
 
 const route = useRoute()
@@ -59,6 +61,39 @@ const copy = () => {
   if (text)
     return navigator.clipboard.writeText(text).then(() => alert("Copiado"))
 }
+
+const newItem = ref(false)
+const pendingCreation = ref(false)
+
+const createElement = async (event: Event) => {
+  if (pendingCreation.value) {
+    return
+  }
+
+  pendingCreation.value = true
+  const form = event.target as HTMLFormElement
+
+  const formData = new FormData(form)
+
+  const { data, error } = await useFetch<TodoItem>(form.action, {
+    method: "POST",
+    body: {
+      name: formData.get("name"),
+    },
+  })
+
+  if (error.value) {
+    alert(error.value)
+    return
+  }
+
+  if (data.value) {
+    originalItems.value?.push(data.value)
+  }
+
+  newItem.value = false
+  pendingCreation.value = false
+}
 </script>
 
 <template>
@@ -96,6 +131,28 @@ const copy = () => {
             >
               {{ item.text }}
             </list-item>
+          </li>
+          <li>
+            <app-button
+              v-if="!newItem"
+              class="w-full border-none underline"
+              @click="newItem = true"
+            >
+              Nuevo elemento
+            </app-button>
+            <form
+              v-else
+              @submit.prevent="createElement"
+              :action="`/api/notion/pages/${pageId}/items`"
+              method="dialog"
+            >
+              <fieldset class="flex" :disabled="pendingCreation">
+                <input
+                  class="bg-white-c px-1 py-0.5 text-lg rounded text-black w-full mx-2 my-1 disabled:cursor-not-allowed"
+                  name="name"
+                />
+              </fieldset>
+            </form>
           </li>
         </ul>
 

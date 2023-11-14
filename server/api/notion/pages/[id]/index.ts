@@ -1,43 +1,39 @@
-import { useNotion } from "@/composables/useNotion"
-import { PageObjectResponse } from "@notionhq/client/build/src/api-endpoints"
-import { NotionOAuthResponse, Page } from "~~/types"
+import { type PageObjectResponse } from "@notionhq/client/build/src/api-endpoints"
+import { type Page } from "~~/types"
 
-export default defineEventHandler(async (event): Promise<Page|void> => {
-	const { id } = event.context.params
+export default defineEventHandler(async (event): Promise<Page | void> => {
+  const id = getRouterParam(event, "id")
 
-	const loginData: NotionOAuthResponse = JSON.parse(
-		getCookie(event, "loginData") ?? "{}"
-	)
+  if (!id) {
+    throw {
+      fatal: true,
+      message: "No id provided",
+      name: "Bad request",
+      statusCode: 400,
+      statusMessage: "Bad request",
+    }
+  }
 
-	if (!loginData.access_token) {
-		return sendError(event, {
-			fatal: false,
-			message: "No access token provided",
-			name: "Bad request",
-			statusCode: 400,
-			statusMessage: "Bad request",
-		})
-	}
+  const notion = useNotion(getCookie(event, "loginData"))
 
-	const notion = useNotion(loginData.access_token)
+  const page = (await notion.pages.retrieve({
+    page_id: id,
+  })) as PageObjectResponse
 
-	const page = (await notion.pages.retrieve({
-		page_id: id,
-	})) as PageObjectResponse
+  const pageProps = await notion.pages.properties.retrieve({
+    page_id: id,
+    property_id: "title",
+  })
 
-	const pageProps = await notion.pages.properties.retrieve({
-		page_id: id,
-		property_id: "title",
-	})
+  if (pageProps.object !== "list") return
 
-	if (pageProps.object !== "list") return page
+  if (pageProps.results[0].type !== "title") return
 
-	if (pageProps.results[0].type !== "title") return page
+  const title = pageProps.results[0].title
 
-	const title = pageProps.results[0].title
-
-	return {
-		...page,
-		title: title.plain_text,
-	}
+  return {
+    ...page,
+    title: title.plain_text,
+    items: [],
+  }
 })
