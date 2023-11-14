@@ -17,13 +17,18 @@ const url = urlBuilder(`${notionUrl}/oauth/authorize`, {
   response_type: "code",
   owner: "user",
 })
+
+useHead({
+  script: [
+    ...(production
+      ? [{ async: true, src: "https://cdn.splitbee.io/sb.js" }]
+      : []),
+  ],
+})
 </script>
 
 <template>
   <NuxtLayout>
-    <Head>
-      <Script v-if="production" async src="https://cdn.splitbee.io/sb.js" />
-    </Head>
     <main>
       <div>
         <section class="hero">
