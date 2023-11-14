@@ -17,11 +17,50 @@ interface UseLocalStorageProp {
   onLoad?: () => void
 }
 
-export function getSavedItems(key: string): LocalStorageItems {
+interface UseLocalStorageReturn {
+  save: () => void
+  load: () => void
+}
+
+export function getSavedItems<T = LocalStorageItems>(key: string): T {
   return JSON.parse(localStorage.getItem(key) ?? "{}")
 }
 
-export const useLocalStorage = (props: UseLocalStorageProp) => {
+function legacyLoad(items: Ref<TodoItem[] | null>): void {
+  if (!items.value) {
+    return
+  }
+
+  const count = getSavedItems<Record<string, number>>("count")
+  const prices = getSavedItems<Record<string, number>>("price")
+  const lastPrices = getSavedItems<Record<string, number>>("lastPrice")
+
+  const isEmpty = (list: Record<string, number>): boolean => {
+    return !Object.values(list).length
+  }
+
+  if (isEmpty(prices) && isEmpty(lastPrices) && isEmpty(count)) {
+    return
+  }
+
+  items.value.forEach((item) => {
+    if (prices[item.id]) {
+      item.price = prices[item.id]
+    }
+
+    if (lastPrices[item.id]) {
+      item.price = lastPrices[item.id]
+    }
+
+    if (count[item.id]) {
+      item.price = count[item.id]
+    }
+  })
+}
+
+export function useLocalStorage(
+  props: UseLocalStorageProp,
+): UseLocalStorageReturn {
   const { items, key: propKey, onSave, onLoad } = props
 
   const key = isRef(propKey) ? propKey : computed(() => propKey)
@@ -56,6 +95,12 @@ export const useLocalStorage = (props: UseLocalStorageProp) => {
       if (!key.value || !items.value) return
 
       const savedItems = getSavedItems(key.value)
+
+      if (!Object.values(savedItems).length) {
+        legacyLoad(items)
+        stop?.()
+        return onLoad?.()
+      }
 
       items.value.forEach((item) => {
         if (!savedItems[item.id]) {
