@@ -51,7 +51,7 @@ export default defineEventHandler(async (event): Promise<TodoItem> => {
   if (!name || typeof name !== "string") {
     throw createError({
       statusCode: 400,
-      statusMessage: "El nombre no es válido",
+      data: "El nombre no es válido",
     })
   }
 

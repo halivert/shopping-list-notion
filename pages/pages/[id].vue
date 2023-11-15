@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { TodoItem } from "~/types"
+import useAddItems from "~/components/useAddItems"
 
 definePageMeta({ middleware: "auth" })
 
@@ -29,6 +29,8 @@ const reset = () => {
     item.lastPrice = item.price
     item.price = 0
   })
+
+  alert("Reiniciado")
 }
 
 const storedItems = useLocalStorage({
@@ -62,37 +64,21 @@ const copy = () => {
     return navigator.clipboard.writeText(text).then(() => alert("Copiado"))
 }
 
-const newItem = ref(false)
-const pendingCreation = ref(false)
+const { newItem, pendingAdd, addItem } = useAddItems(
+  `/api/notion/pages/${pageId.value}/items`,
+)
 
-const createElement = async (event: Event) => {
-  if (pendingCreation.value) {
-    return
-  }
-
-  pendingCreation.value = true
+function handleSubmit(event: Event) {
   const form = event.target as HTMLFormElement
-
   const formData = new FormData(form)
 
-  const { data, error } = await useFetch<TodoItem>(form.action, {
-    method: "POST",
-    body: {
-      name: formData.get("name"),
-    },
-  })
+  const name = formData.get("name")?.toString()
 
-  if (error.value) {
-    alert(error.value)
-    return
-  }
-
-  if (data.value) {
-    originalItems.value?.push(data.value)
-  }
-
-  newItem.value = false
-  pendingCreation.value = false
+  addItem(name)
+    .then((item) => {
+      originalItems.value?.push(item)
+    })
+    .catch(alert)
 }
 </script>
 
@@ -140,16 +126,12 @@ const createElement = async (event: Event) => {
             >
               Nuevo elemento
             </app-button>
-            <form
-              v-else
-              @submit.prevent="createElement"
-              :action="`/api/notion/pages/${pageId}/items`"
-              method="dialog"
-            >
-              <fieldset class="flex" :disabled="pendingCreation">
+            <form v-else @submit.prevent="handleSubmit" method="dialog">
+              <fieldset class="flex" :disabled="pendingAdd">
                 <input
                   class="bg-white-c px-1 py-0.5 text-lg rounded text-black w-full mx-2 my-1 disabled:cursor-not-allowed"
                   name="name"
+                  required
                 />
               </fieldset>
             </form>
