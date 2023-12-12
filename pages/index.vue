@@ -145,7 +145,7 @@ main {
 
 .columns {
   display: flex;
-  flex-flow: row wrap;
+  flex-flow: row wrap-reverse;
   gap: 1em;
 }
 
