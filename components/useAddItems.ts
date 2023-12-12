@@ -3,14 +3,14 @@ import type { TodoItem } from "~/types"
 interface Return {
   newItem: Ref<boolean>
   pendingAdd: Ref<boolean>
-  addItem: (name?: string) => Promise<TodoItem>
+  addItem: (params: { name?: string; after?: string }) => Promise<TodoItem>
 }
 
 export default function useAddItems(action: string): Return {
   const newItem = ref(false)
   const pendingAdd = ref(false)
 
-  const addItem: Return["addItem"] = async (name) => {
+  const addItem: Return["addItem"] = async ({ name, after }) => {
     if (pendingAdd.value) {
       throw new Error("Solicitud en curso")
     }
@@ -25,7 +25,7 @@ export default function useAddItems(action: string): Return {
 
     const { data, error } = await useFetch<TodoItem>(action, {
       method: "POST",
-      body: { name },
+      body: { name, after },
     })
 
     if (error.value) {

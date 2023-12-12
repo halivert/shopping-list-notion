@@ -74,7 +74,7 @@ function handleSubmit(event: Event) {
 
   const name = formData.get("name")?.toString()
 
-  addItem(name)
+  addItem({ name, after: originalItems.value?.at(-1)?.id })
     .then((item) => {
       originalItems.value?.push(item)
     })

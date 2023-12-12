@@ -7,7 +7,7 @@ function getTodoItem(
   result: BlockObjectResponse | PartialBlockObjectResponse,
 ): TodoItem {
   if (result.object !== "block") {
-    console.log(result)
+    console.log(result) // Don't delete
 
     throw createError({
       statusCode: 500,
@@ -18,7 +18,7 @@ function getTodoItem(
   const todo = result as BlockObjectResponse
 
   if (todo.type !== "to_do") {
-    console.log(result)
+    console.log(result) // Don't delete
 
     throw createError({
       statusCode: 500,
@@ -44,14 +44,22 @@ export default defineEventHandler(async (event): Promise<TodoItem> => {
 
   const notion = useNotion(getCookie(event, "loginData"))
 
-  const body = await readBody(event)
-
-  const name: unknown = body.name
+  const { name, after } = await readBody<{
+    name: string | undefined
+    after: string | undefined
+  }>(event)
 
   if (!name || typeof name !== "string") {
     throw createError({
       statusCode: 400,
       data: "El nombre no es válido",
+    })
+  }
+
+  if (typeof after !== "string" && typeof after !== "undefined") {
+    throw createError({
+      statusCode: 400,
+      data: "El valor de after no es válido",
     })
   }
 
@@ -73,6 +81,7 @@ export default defineEventHandler(async (event): Promise<TodoItem> => {
         },
       },
     ],
+    ...(after ? { after } : undefined),
   })
 
   return getTodoItem(data.results[0])
