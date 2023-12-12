@@ -91,38 +91,34 @@ export function useLocalStorage(
   }
 
   function load(): void {
-    const internalLoad = (stop?: WatchStopHandle) => {
-      if (!key.value || !items.value) return
+    watch(
+      [items, key],
+      () => {
+        if (!key.value || !items.value) return
 
-      const savedItems = getSavedItems(key.value)
+        const savedItems = getSavedItems(key.value)
 
-      if (!Object.values(savedItems).length) {
-        legacyLoad(items)
-        stop?.()
-        return onLoad?.()
-      }
-
-      items.value.forEach((item) => {
-        if (!savedItems[item.id]) {
-          return
+        if (!Object.values(savedItems).length) {
+          legacyLoad(items)
+          return onLoad?.()
         }
 
-        Object.assign(item, {
-          count: savedItems[item.id].count,
-          lastPrice: savedItems[item.id].lastPrice,
-          price: savedItems[item.id].price,
+        items.value.forEach((item) => {
+          if (!savedItems[item.id]) {
+            return
+          }
+
+          Object.assign(item, {
+            count: savedItems[item.id].count,
+            lastPrice: savedItems[item.id].lastPrice,
+            price: savedItems[item.id].price,
+          })
         })
-      })
 
-      stop?.()
-      return onLoad?.()
-    }
-
-    if (items.value && key.value) {
-      return internalLoad()
-    }
-
-    const stop: WatchStopHandle = watch([items, key], () => internalLoad(stop))
+        return onLoad?.()
+      },
+      { immediate: true },
+    )
   }
 
   return { save, load }

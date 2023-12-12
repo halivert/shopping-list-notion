@@ -13,10 +13,8 @@ const getTotal = (pageId: string): number => {
 }
 
 const getCount = (pageId: string): number => {
-  return Object.values(getSavedItems(pageId)).reduce(
-    (a, { price, count }) => a + (price ? count : 0),
-    0,
-  )
+  return Object.values(getSavedItems(pageId)).filter(({ price }) => !!price)
+    .length
 }
 
 const total = computed(
