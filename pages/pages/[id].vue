@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import useAddItems from "~/components/useAddItems"
-
 definePageMeta({ middleware: "auth" })
 
 const route = useRoute()
