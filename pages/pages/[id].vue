@@ -30,7 +30,7 @@ const reset = () => {
     item.price = 0
   })
 
-  alert("Reiniciado")
+  myAlert("Reiniciado")
 }
 
 const storedItems = useLocalStorage({
@@ -61,7 +61,7 @@ const copy = () => {
     .join("\n")
 
   if (text)
-    return navigator.clipboard.writeText(text).then(() => alert("Copiado"))
+    return navigator.clipboard.writeText(text).then(() => myAlert("Copiado"))
 }
 
 const { newItem, pendingAdd, addItem } = useAddItems(
@@ -78,7 +78,7 @@ function handleSubmit(event: Event) {
     .then((item) => {
       originalItems.value?.push(item)
     })
-    .catch(alert)
+    .catch(myAlert)
 }
 </script>
 
