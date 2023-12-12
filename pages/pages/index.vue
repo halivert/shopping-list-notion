@@ -24,6 +24,13 @@ const total = computed(
 const totalCount = computed(
   () => pages.value?.reduce((a, page) => a + getCount(page.id), 0) ?? 0,
 )
+
+function clearStorage(event: Event) {
+  const button = event.target as HTMLButtonElement
+  const form = button.closest("form")
+  localStorage.clear()
+  form?.submit()
+}
 </script>
 
 <template>
@@ -77,7 +84,11 @@ const totalCount = computed(
 
       <footer class="flex items-center justify-end">
         <form class="inline-block" method="POST" action="/api/logout">
-          <app-button class="border border-white-c bg-white-b py-1 px-3">
+          <app-button
+            type="button"
+            @click="clearStorage($event)"
+            class="border border-white-c bg-white-b py-1 px-3"
+          >
             Cerrar sesión
           </app-button>
         </form>
