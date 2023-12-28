@@ -6,6 +6,22 @@ import type {
 import { type Ref } from "vue"
 import { type TodoItem } from "~~/types"
 
+function extractCount(item: string): number {
+  if (item.includes("-")) {
+    const [, second] = item.split("-")
+
+    const [possibleNum] = second.trim().split(" ")
+
+    const num = parseInt(possibleNum, 10)
+
+    if (!Number.isNaN(num)) {
+      return num
+    }
+  }
+
+  return 1
+}
+
 const transform = (data: ListBlockChildrenResponse): TodoItem[] =>
   data.results
     .filter((block): block is BlockObjectResponse =>
@@ -16,7 +32,7 @@ const transform = (data: ListBlockChildrenResponse): TodoItem[] =>
       (todo): TodoItem => ({
         id: todo.id,
         text: todo.to_do.rich_text[0].plain_text,
-        count: 1,
+        count: extractCount(todo.to_do.rich_text[0].plain_text),
         checked: todo.to_do.checked,
         price: 0,
       }),

@@ -107,12 +107,13 @@ export function useLocalStorage(
           if (!savedItems[item.id]) {
             return
           }
+          const { count, lastPrice, price } = savedItems[item.id]
 
-          Object.assign(item, {
-            count: savedItems[item.id].count,
-            lastPrice: savedItems[item.id].lastPrice,
-            price: savedItems[item.id].price,
-          })
+          if (count === 1 && !price) {
+            return
+          }
+
+          Object.assign(item, { count, lastPrice, price })
         })
 
         return onLoad?.()
