@@ -3,14 +3,15 @@
 @tailwind utilities;
 
 @layer base {
-  input::placeholder {
-    @apply text-black opacity-25;
-  }
+	input::placeholder {
+		@apply text-black opacity-25;
+	}
 }
 
 @layer components {
-  .default-button {
-    @apply flex-1 text-base bg-white-a text-black;
-    @apply border border-black rounded py-0.5 px-1;
-  }
+	.default-button {
+		@apply flex-1 text-base bg-white-a text-black;
+		@apply border border-black rounded py-0.5 px-1;
+	}
 }
+
