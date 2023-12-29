@@ -29,7 +29,7 @@ onMounted(open)
   <dialog
     @close="close()"
     ref="dialog"
-    class="p-3 rounded bg-white-a max-w-full w-1/3"
+    class="p-3 rounded bg-white-a max-w-full w-1/3 text-black"
   >
     <div class="flex flex-col">
       <slot></slot>
@@ -45,7 +45,7 @@ onMounted(open)
 
 <style lang="postcss">
 dialog::backdrop {
-  opacity: 0.5;
-  background-color: var(--text);
+  opacity: 0.9;
+  background-color: var(--background-c);
 }
 </style>
