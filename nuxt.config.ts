@@ -1,4 +1,5 @@
 export default defineNuxtConfig({
+  modules: ["@vueuse/nuxt"],
   runtimeConfig: {
     notionSecret: process.env.NUXT_NOTION_SECRET,
     public: {

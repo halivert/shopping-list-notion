@@ -7,15 +7,17 @@
     "preview": "nuxt preview"
   },
   "devDependencies": {
-    "@nuxt/test-utils": "^3.9.0",
-    "autoprefixer": "^10.4.16",
-    "postcss": "^8.4.32",
-    "tailwindcss": "^3.4.0",
-    "vitest": "^1.1.0"
+    "@nuxt/test-utils": "3.11.0",
+    "@vueuse/core": "10.7.2",
+    "@vueuse/nuxt": "10.7.2",
+    "autoprefixer": "10.4.17",
+    "postcss": "8.4.34",
+    "tailwindcss": "3.4.1",
+    "vitest": "1.1.2"
   },
   "dependencies": {
-    "nuxt": "3.9.0",
-    "@notionhq/client": "2.2.14"
+    "@notionhq/client": "2.2.14",
+    "nuxt": "3.10.1"
   },
   "prettier": {
     "semi": false
