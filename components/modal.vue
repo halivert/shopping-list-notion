@@ -1,6 +1,10 @@
 <script setup lang="ts">
 const dialog = ref<HTMLDialogElement | null>(null)
 
+defineOptions({
+  inheritAttrs: false,
+})
+
 const emit = defineEmits<{
   close: []
   open: []
@@ -29,9 +33,9 @@ onMounted(open)
   <dialog
     @close="close()"
     ref="dialog"
-    class="p-3 rounded bg-white-a max-w-full w-1/3 text-black"
+    class="p-3 rounded bg-white-a max-w-full w-1/3 sm:w-9/12 text-black"
   >
-    <div class="flex flex-col">
+    <div class="flex flex-col" v-bind="$attrs">
       <slot></slot>
 
       <slot name="buttons">

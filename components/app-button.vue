@@ -1,5 +1,11 @@
+<script setup lang="ts">
+defineProps<{
+  form?: string
+}>()
+</script>
+
 <template>
-	<button class="default-button">
-		<slot />
-	</button>
+  <button class="default-button" :form="form">
+    <slot />
+  </button>
 </template>

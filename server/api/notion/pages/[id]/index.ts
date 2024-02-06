@@ -1,17 +1,12 @@
 import { type PageObjectResponse } from "@notionhq/client/build/src/api-endpoints"
 import { type Page } from "~~/types"
+import { IdNotProvided } from "~/server/utils/errors"
 
 export default defineEventHandler(async (event): Promise<Page | void> => {
   const id = getRouterParam(event, "id")
 
   if (!id) {
-    throw {
-      fatal: true,
-      message: "No id provided",
-      name: "Bad request",
-      statusCode: 400,
-      statusMessage: "Bad request",
-    }
+    throw IdNotProvided()
   }
 
   const notion = useNotion(getCookie(event, "loginData"))

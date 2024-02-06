@@ -4,6 +4,7 @@ module.exports = {
     "./components/**/*.{js,vue,ts}",
     "./layouts/**/*.vue",
     "./pages/**/*.vue",
+    "./utils/**/*.tsx",
     "./app.vue",
   ],
   theme: {

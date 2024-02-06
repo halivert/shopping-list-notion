@@ -1,7 +1,7 @@
 import { createVNode, render } from "vue"
 import Modal from "~/components/modal.vue"
 
-export default function (message?: string) {
+export default function (message?: string): Promise<void> {
   const parent = document.createElement("div")
 
   document.documentElement.appendChild(parent)
@@ -13,8 +13,10 @@ export default function (message?: string) {
         parent.remove()
       },
     },
-    () => [message ?? ''],
+    () => [message ?? ""],
   )
 
   render(modal, parent)
+
+  return Promise.resolve()
 }
