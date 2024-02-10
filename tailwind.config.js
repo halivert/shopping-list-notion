@@ -21,6 +21,9 @@ module.exports = {
           b: "var(--accent-hover)",
         },
       },
+      maxHeight: {
+        screen: "100dvh",
+      },
       height: {
         screen: "100dvh",
       },

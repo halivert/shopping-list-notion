@@ -1,5 +1,6 @@
 export default defineNuxtConfig({
   modules: ["@vueuse/nuxt"],
+
   runtimeConfig: {
     notionSecret: process.env.NUXT_NOTION_SECRET,
     public: {
@@ -9,7 +10,9 @@ export default defineNuxtConfig({
       production: process.env.NODE_ENV === "production",
     },
   },
+
   css: ["@/assets/css/main.css"],
+
   postcss: {
     plugins: {
       tailwindcss: {},
