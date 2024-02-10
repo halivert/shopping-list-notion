@@ -1,29 +1,17 @@
 <script setup lang="ts">
-defineProps<{
+const { title } = defineProps<{
   title: string
 }>()
 
-const { production } = useRuntimeConfig()
+useHead({ title })
 
-useHead({
-  script: [
-    ...(production
-      ? [{ async: true, src: "https://cdn.splitbee.io/sb.js" }]
-      : []),
-  ],
-})
+useSplitbee()
 </script>
 
 <template>
-  <NuxtLayout>
-    <Head>
-      <Title>{{ title }}</Title>
-    </Head>
+  <main class="page-layout space-y-3">
+    <h1 class="text-2xl font-semibold">{{ title }}</h1>
 
-    <main class="space-y-3">
-      <h1 class="text-2xl font-semibold">{{ title }}</h1>
-
-      <slot />
-    </main>
-  </NuxtLayout>
+    <slot />
+  </main>
 </template>

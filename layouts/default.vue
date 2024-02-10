@@ -1,14 +1,16 @@
 <script setup lang="ts">
-defineProps<{
+const { title } = defineProps<{
   title?: string
 }>()
+
+useHead({
+  title: title ?? "Lista de compras",
+  link: [{ rel: "icon", type: "image/x-icon", href: "/favicon.webp" }],
+})
 </script>
 
 <template>
-  <Head>
-    <Title>{{ title ?? "Lista de compras" }}</Title>
-    <Link rel="icon" type="image/x-icon" href="/favicon.webp" />
-  </Head>
-
-  <slot />
+  <div class="default-layout">
+    <slot />
+  </div>
 </template>
