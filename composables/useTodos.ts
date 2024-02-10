@@ -22,31 +22,56 @@ function extractCount(item: string): number {
   return 1
 }
 
-const transform = (data: ListBlockChildrenResponse): TodoItem[] =>
-  data.results
-    .filter((block): block is BlockObjectResponse =>
-      Object.hasOwn(block, "type"),
-    )
-    .filter((block): block is ToDoBlockObjectResponse => "to_do" === block.type)
-    .map(
-      (todo): TodoItem => ({
-        id: todo.id,
-        text: todo.to_do.rich_text[0].plain_text,
-        count: extractCount(todo.to_do.rich_text[0].plain_text),
-        checked: todo.to_do.checked,
-        price: 0,
-      }),
-    ) ?? []
+const transform = (
+  data: ListBlockChildrenResponse,
+): Omit<ListBlockChildrenResponse, "results"> & { results: TodoItem[] } => ({
+  ...data,
+  results:
+    data.results
+      .filter((block): block is BlockObjectResponse =>
+        Object.hasOwn(block, "type"),
+      )
+      .filter(
+        (block): block is ToDoBlockObjectResponse => "to_do" === block.type,
+      )
+      .map(
+        (todo): TodoItem => ({
+          id: todo.id,
+          text: todo.to_do.rich_text[0].plain_text,
+          count: extractCount(todo.to_do.rich_text[0].plain_text),
+          checked: todo.to_do.checked,
+          price: 0,
+        }),
+      ) ?? [],
+})
 
 export const useTodos = (id: Ref<string>) => {
-  const {
-    data: items,
-    pending,
-    refresh,
-  } = useFetch(`/api/notion/pages/${id.value}/items`, {
-    transform,
-    headers: useRequestHeaders(["cookie"]),
-  })
+  const { data, pending, refresh } = useFetch(
+    `/api/notion/pages/${id.value}/items`,
+    {
+      transform,
+      headers: useRequestHeaders(["cookie"]),
+    },
+  )
 
-  return { items, pending, refresh }
+  const loadMore = () => {
+    if (!data.value?.has_more) {
+      return
+    }
+
+    const cursor = data.value.next_cursor
+
+    $fetch(`/api/notion/pages/${id.value}/items?cursor=${cursor}`).then(
+      (newData) => {
+        const transformed = transform(newData)
+
+        data.value = {
+          ...transformed,
+          results: [...(data.value?.results ?? []), ...transformed.results],
+        }
+      },
+    )
+  }
+
+  return { data, pending, refresh, loadMore }
 }

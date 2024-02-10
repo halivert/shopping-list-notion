@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { vInfiniteScroll } from "@vueuse/components"
+
 definePageMeta({ middleware: "auth" })
 
 const route = useRoute()
@@ -7,11 +9,14 @@ const hideChecked = ref(true)
 const pageId = computed(() => route.params.id as string)
 
 const {
-  items: originalItems,
+  data,
   pending,
   refresh: refreshItems,
+  loadMore: loadMoreItems,
 } = useTodos(pageId)
 const { page, refresh: refreshPage } = usePage(pageId)
+
+const originalItems = computed(() => data.value?.results ?? [])
 
 const items = computed(
   () =>
@@ -92,11 +97,11 @@ function handleSubmit(event: Event) {
 <template>
   <div>
     <NuxtLayout :title="page?.title ?? 'Página...'">
-      <main class="p-2 min-h-screen">
+      <main class="p-2 min-h-screen h-screen">
         <div v-if="pending" class="text-center text-xl font-semibold">
           Cargando...
         </div>
-        <div v-else>
+        <div v-else class="flex flex-col h-full">
           <h1 class="text-2xl font-semibold">{{ page?.title }}</h1>
 
           <header
@@ -113,7 +118,14 @@ function handleSubmit(event: Event) {
 
           <ul
             role="list"
-            class="max-w-full overflow-x-hidden space-y-2 my-4 pt-1"
+            class="max-w-full overflow-y-scroll h-screen space-y-2 my-4 pt-1 overscroll-auto"
+            v-infinite-scroll="[
+              loadMoreItems,
+              {
+                canLoadMore: () => !!data?.has_more,
+                interval: 500,
+              },
+            ]"
           >
             <li v-for="item in items" :key="item.id">
               <list-item

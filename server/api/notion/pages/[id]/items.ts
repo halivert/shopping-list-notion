@@ -1,8 +1,17 @@
 import { IdNotProvided } from "~/server/utils/errors"
+import { z } from "zod"
+
+const validator = (data: unknown) => {
+  return z
+    .object({
+      cursor: z.string().optional(),
+    })
+    .parse(data)
+}
 
 export default defineEventHandler(async (event) => {
   const id = getRouterParam(event, "id")
-  const cursor = getRouterParam(event, "cursor")
+  const query = await getValidatedQuery(event, validator)
 
   if (!id) {
     throw IdNotProvided()
@@ -12,7 +21,7 @@ export default defineEventHandler(async (event) => {
 
   return notion.blocks.children.list({
     block_id: id,
-    start_cursor: cursor,
+    start_cursor: query.cursor,
     page_size: 50,
   })
 })
