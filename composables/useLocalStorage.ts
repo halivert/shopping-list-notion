@@ -18,8 +18,21 @@ interface UseLocalStorageProp {
 }
 
 interface UseLocalStorageReturn {
+  /**
+   * Saves the items in the local storage
+   */
   save: () => void
+
+  /**
+   * Loads the items from the local storage
+   */
   load: () => void
+
+  /**
+   * Resets the local storage items, sets the price to 0 and the last price to
+   * the current price, or the last price setted
+   */
+  reset: () => void
 }
 
 export function getSavedItems<T = LocalStorageItems>(key: string): T {
@@ -122,5 +135,25 @@ export function useLocalStorage(
     )
   }
 
-  return { save, load }
+  function reset(): void {
+    if (!key.value) return
+
+    const savedItems = getSavedItems(key.value)
+
+    const toSave = Object.fromEntries(
+      Object.entries(savedItems).map(([id, item]) => [
+        item.id,
+        {
+          id: id,
+          count: 0,
+          price: 0,
+          lastPrice: item.price || item.lastPrice || 0,
+        },
+      ]),
+    )
+
+    localStorage.setItem(key.value, JSON.stringify(toSave))
+  }
+
+  return { save, load, reset }
 }

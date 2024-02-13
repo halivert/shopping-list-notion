@@ -27,19 +27,6 @@ const items = computed(
 
 const { totalFormated } = useTotal(items)
 
-const reset = () => {
-  originalItems.value?.forEach((item) => {
-    if (item.price) {
-      item.lastPrice = item.price
-      item.price = 0
-    }
-  })
-
-  storedItems.save()
-
-  myAlert("Reiniciado")
-}
-
 const storedItems = useLocalStorage({
   items: originalItems,
   key: pageId,
@@ -75,7 +62,7 @@ const { newItem, pendingAdd, addItem } = useAddItems(
   `/api/notion/pages/${pageId.value}/items`,
 )
 
-function handleSubmit(event: Event) {
+const handleSubmit = (event: Event) => {
   const form = event.target as HTMLFormElement
   const formData = new FormData(form)
 
@@ -91,6 +78,12 @@ function handleSubmit(event: Event) {
       originalItems.value?.push(item)
     })
     .catch((error: Error) => myAlert(error.message))
+}
+
+const reset = () => {
+  storedItems.reset()
+
+  myAlert("Elements resetted")
 }
 </script>
 
