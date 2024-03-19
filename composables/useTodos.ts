@@ -54,6 +54,8 @@ export const useTodos = (id: Ref<string>) => {
     },
   )
 
+  const lastLoaded = ref<string | null>(null)
+
   const loadMore = () => {
     if (!data.value?.has_more) {
       return
@@ -61,9 +63,15 @@ export const useTodos = (id: Ref<string>) => {
 
     const cursor = data.value.next_cursor
 
+    if (lastLoaded.value === cursor) {
+      return
+    }
+
     $fetch(`/api/notion/pages/${id.value}/items?cursor=${cursor}`).then(
       (newData) => {
         const transformed = transform(newData)
+
+        lastLoaded.value = cursor
 
         data.value = {
           ...transformed,
