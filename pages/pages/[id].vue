@@ -83,7 +83,7 @@ const handleSubmit = (event: Event) => {
 const reset = () => {
   storedItems.reset()
 
-  myAlert("Elements resetted")
+  myAlert("Elementos reiniciados")
 }
 </script>
 
