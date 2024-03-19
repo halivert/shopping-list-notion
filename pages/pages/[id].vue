@@ -83,6 +83,11 @@ const handleSubmit = (event: Event) => {
 const reset = () => {
   storedItems.reset()
 
+  data.value?.results.forEach((result) => {
+    result.lastPrice = result.price || result.lastPrice
+    result.price = 0
+  })
+
   myAlert("Elementos reiniciados")
 }
 </script>

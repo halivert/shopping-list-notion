@@ -67,18 +67,20 @@ export const useTodos = (id: Ref<string>) => {
       return
     }
 
-    $fetch(`/api/notion/pages/${id.value}/items?cursor=${cursor}`).then(
-      (newData) => {
-        const transformed = transform(newData)
+    lastLoaded.value = cursor
 
-        lastLoaded.value = cursor
+    $fetch(`/api/notion/pages/${id.value}/items?cursor=${cursor}`)
+      .then((newData) => {
+        const transformed = transform(newData)
 
         data.value = {
           ...transformed,
           results: [...(data.value?.results ?? []), ...transformed.results],
         }
-      },
-    )
+      })
+      .catch(() => {
+        lastLoaded.value = null
+      })
   }
 
   return { data, pending, refresh, loadMore }
