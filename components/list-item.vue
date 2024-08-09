@@ -72,9 +72,9 @@ const handleSubmit = (e: Event) => {
       >
         <button
           class="h-6 w-6 rounded bg-white-c disabled:opacity-30 disabled:cursor-not-allowed p-0.5"
-          @click="updateCount(Math.ceil(props.count - 1))"
+          @click="updateCount(Math.ceil(count - 1))"
           @contextmenu.prevent="context(() => updateCount(1))"
-          :disabled="props.count === 1"
+          :disabled="count === 1"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -91,11 +91,11 @@ const handleSubmit = (e: Event) => {
           class="px-3"
           @contextmenu.prevent="context(() => (editCount = true))"
         >
-          {{ props.count }}
+          {{ count }}
         </span>
         <button
           class="h-6 w-6 rounded bg-green-b text-white-a p-0.5"
-          @click="updateCount(Math.floor(props.count + 1))"
+          @click="updateCount(Math.floor(count + 1))"
           @contextmenu.prevent
         >
           <svg
@@ -120,7 +120,7 @@ const handleSubmit = (e: Event) => {
           name="count"
           type="number"
           step="0.01"
-          :value="props.count"
+          :value="count"
         />
       </form>
       <div class="relative">
@@ -128,12 +128,12 @@ const handleSubmit = (e: Event) => {
           class="bg-white-c px-1 py-0.5 text-lg rounded text-black w-full"
           type="number"
           :placeholder="lastPriceFormatted"
-          :value="props.price || null"
+          :value="price || null"
           @input="updatePrice"
         />
 
         <span
-          v-if="total && props.count !== 1"
+          v-if="total && count !== 1"
           class="absolute top-1 right-7 bg-white-a px-1 rounded"
           >{{ getCurrency(total) }}</span
         >
