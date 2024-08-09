@@ -15,7 +15,10 @@ const emit = defineEmits<{
 
 const updatePrice = (event: Event) => {
   const target = event.target as HTMLInputElement
-  emit("update:price", target.valueAsNumber)
+
+  if (!Number.isNaN(target.valueAsNumber)) {
+    emit("update:price", target.valueAsNumber)
+  }
 }
 
 const updateCount = (newCount: number) => {
@@ -36,12 +39,16 @@ const lastPriceFormatted = computed(() =>
 const editCount = ref(false)
 
 const context = (fn?: () => void) => {
-  navigator.vibrate([100, 100, 150])
+  try {
+    navigator.vibrate([100, 100, 150])
+  } catch (e: unknown) {
+    console.error("Vibrate not defined", e)
+  }
 
   fn?.()
 }
 
-const handleSubmit = (e: Event) => {
+function handleSubmit(e: Event) {
   const form = e.target as HTMLFormElement
   const countInput = form.elements.namedItem("count")
 
@@ -49,6 +56,10 @@ const handleSubmit = (e: Event) => {
     return
   }
 
+  handleUpdateCount(countInput)
+}
+
+function handleUpdateCount(countInput: HTMLInputElement) {
   const count = countInput.valueAsNumber
 
   if (Number.isNaN(count)) {
@@ -116,19 +127,20 @@ const handleSubmit = (e: Event) => {
       </div>
       <form v-else @submit.prevent="handleSubmit" class="w-1/2 sm:w-1/3">
         <input
-          class="bg-white-c px-1 py-0.5 text-lg rounded text-black w-full"
+          class="bg-white-c px-1 py-0.5 text-lg rounded text-black w-full invalid:text-red-600 invalid:saturate-200"
           name="count"
           type="number"
-          step="0.01"
+          step="0.001"
           :value="count"
+          @blur="(e) => handleUpdateCount(e.target as HTMLInputElement)"
         />
       </form>
       <div class="relative">
         <input
-          class="bg-white-c px-1 py-0.5 text-lg rounded text-black w-full"
+          class="bg-white-c px-1 py-0.5 text-lg rounded text-black w-full invalid:text-red-600 invalid:saturate-200"
           type="number"
           :placeholder="lastPriceFormatted"
-          :value="price || null"
+          :value="price || ''"
           @input="updatePrice"
         />
 

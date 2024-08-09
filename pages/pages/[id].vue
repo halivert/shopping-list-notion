@@ -25,6 +25,10 @@ const items = computed(
       : originalItems.value) ?? [],
 )
 
+const notValid = computed(() =>
+  items.value.some(({ price }) => Number.isNaN(price)),
+)
+
 const { totalFormated } = useTotal(items)
 
 const storedItems = useLocalStorage({
@@ -96,7 +100,10 @@ const reset = () => {
   <div>
     <NuxtLayout :title="page?.title ?? 'Página...'">
       <main class="p-2 min-h-screen h-screen">
-        <div v-if="status === 'pending'" class="text-center text-xl font-semibold">
+        <div
+          v-if="status === 'pending'"
+          class="text-center text-xl font-semibold"
+        >
           Cargando...
         </div>
         <div v-else class="flex flex-col h-full">
@@ -105,7 +112,12 @@ const reset = () => {
           <header
             class="text-xl sticky top-0 pt-2 pb-1 bg-white-a flex justify-between z-10 border-b-2 border-white-c -mx-2 px-2"
           >
-            <span>Total: {{ totalFormated }}</span>
+            <span
+              >Total:
+              <span :class="{ 'text-red-600': notValid }">{{
+                totalFormated
+              }}</span></span
+            >
             <small>
               <label>
                 Ocultar marcados
@@ -130,7 +142,7 @@ const reset = () => {
                 v-bind="item"
                 v-model:price="item.price"
                 v-model:count="item.count"
-                @update:price="storedItems.save()"
+								@update:price="storedItems.save()"
                 @update:count="storedItems.save()"
               >
                 {{ item.text }}
