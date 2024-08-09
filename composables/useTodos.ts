@@ -46,7 +46,7 @@ const transform = (
 })
 
 export const useTodos = (id: Ref<string>) => {
-  const { data, pending, refresh } = useFetch(
+  const { data, status, refresh } = useFetch(
     `/api/notion/pages/${id.value}/items`,
     {
       transform,
@@ -83,5 +83,5 @@ export const useTodos = (id: Ref<string>) => {
       })
   }
 
-  return { data, pending, refresh, loadMore }
+  return { data, status, refresh, loadMore }
 }

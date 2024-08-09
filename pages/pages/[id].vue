@@ -10,7 +10,7 @@ const pageId = computed(() => route.params.id as string)
 
 const {
   data,
-  pending,
+  status,
   refresh: refreshItems,
   loadMore: loadMoreItems,
 } = useTodos(pageId)
@@ -96,7 +96,7 @@ const reset = () => {
   <div>
     <NuxtLayout :title="page?.title ?? 'Página...'">
       <main class="p-2 min-h-screen h-screen">
-        <div v-if="pending" class="text-center text-xl font-semibold">
+        <div v-if="status === 'pending'" class="text-center text-xl font-semibold">
           Cargando...
         </div>
         <div v-else class="flex flex-col h-full">
