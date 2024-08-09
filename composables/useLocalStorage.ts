@@ -133,7 +133,7 @@ export function useLocalStorage(
           Object.assign(item, {
             lastPrice,
             price,
-            count: item.count > 1 ? item.count : (count ?? 1),
+            count: item.count > 1 ? item.count : (count || 1),
           })
         })
 
