@@ -1,4 +1,4 @@
-import { type Ref, type WatchStopHandle } from "vue"
+import { type Ref } from "vue"
 import { type TodoItem } from "~~/types"
 
 interface LocalStorageItem {
@@ -39,6 +39,10 @@ export function getSavedItems<T = LocalStorageItems>(key: string): T {
   return JSON.parse(localStorage.getItem(key) ?? "{}")
 }
 
+/**
+ * @deprecated
+ * Please use newly load, deprecaded in 2024-08
+ */
 function legacyLoad(items: Ref<TodoItem[] | null>): void {
   if (!items.value) {
     return
@@ -126,7 +130,11 @@ export function useLocalStorage(
             return
           }
 
-          Object.assign(item, { count, lastPrice, price })
+          Object.assign(item, {
+            lastPrice,
+            price,
+            count: item.count > 1 ? item.count : (count ?? 1),
+          })
         })
 
         return onLoad?.()
@@ -145,7 +153,7 @@ export function useLocalStorage(
         item.id,
         {
           id: id,
-          count: 0,
+          count: item.count ?? 1,
           price: 0,
           lastPrice: item.price || item.lastPrice || 0,
         },

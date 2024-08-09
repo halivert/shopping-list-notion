@@ -6,9 +6,9 @@ import type {
 import { type Ref } from "vue"
 import { type TodoItem } from "~~/types"
 
-function extractCount(item: string): number {
-  if (item.includes("-")) {
-    const [, second] = item.split("-")
+function extractCount(itemName: string): number {
+  if (itemName.includes("-")) {
+    const [, second] = itemName.split("-")
 
     const [possibleNum] = second.trim().split(" ")
 
